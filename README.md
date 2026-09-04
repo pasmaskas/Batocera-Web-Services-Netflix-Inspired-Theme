@@ -1,6 +1,6 @@
 # Batocera Web Services — Netflix-Inspired Theme
 
-Give your Batocera setup a fresh, modern look with **Batocera Web Services**, a sleek Netflix-inspired web interface designed to make browsing and launching your games feel more like a streaming service.
+Give your Batocera setup a fresh, modern look with this **Batocera Web Services Theme**, a sleek Netflix-inspired web interface designed to make browsing and launching your games feel more like a streaming service.
 
 <img width="1280" height="672" alt="New Project" src="https://github.com/user-attachments/assets/7fea1739-ff28-4bdf-a5ee-c3eef08eb95a" />
 
