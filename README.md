@@ -1,21 +1,21 @@
-# 🎮 Batocera Web Services — Netflix-Inspired Theme
+# Batocera Web Services — Netflix-Inspired Theme
 
 Give your Batocera setup a fresh, modern look with **Batocera Web Services**, a sleek Netflix-inspired web interface designed to make browsing and launching your games feel more like a streaming service.
 
 <img width="1280" height="672" alt="New Project" src="https://github.com/user-attachments/assets/7fea1739-ff28-4bdf-a5ee-c3eef08eb95a" />
 
-## 🎮 Features
+## Features
 
-* 🌑 Modern dark interface with a Netflix-inspired design
-* 🖼️ Clean game cards with artwork, titles, genres and release information
-* ▶️ Launch games directly from the web interface
-* ℹ️ Game information popup with descriptions and artwork
-* 🎬 Integrated game video previews
-* ▶️ Video previews displayed directly over the game artwork
-* 📱 Responsive design for desktop, tablet and mobile devices
-* ⚡ Smooth scrolling and optimized loading for large game libraries
+* Modern dark interface with a Netflix-inspired design
+* Clean game cards with artwork, titles, genres and release information
+* Launch games directly from the web interface
+* Game information popup with descriptions and artwork
+* Integrated game video previews
+* Video previews displayed directly over the game artwork
+* Responsive design for desktop, tablet and mobile devices
+* Smooth scrolling and optimized loading for large game libraries
 
-## 🎬 Game Video Previews
+## Game Video Previews
 
 If a game has a video available, a **play button** appears directly on the game artwork.
 
@@ -25,7 +25,7 @@ Games without an available video will simply display their artwork without a pla
 
 ---
 
-# 🛠️ Installation
+# Installation
 
 ## 1. Back up the original files
 
@@ -66,7 +66,7 @@ This saves the changes to the Batocera overlay so they remain after a reboot or 
 
 After saving the overlay, reboot Batocera or restart the relevant service to see the new theme.
 
-That's it! 🎉
+That's it!
 
 Your **Batocera Web Services** page should now use the new Netflix-inspired design.
 
@@ -96,12 +96,12 @@ You can find the IP address of your Batocera system under:
 
 **Main Menu → Network Settings**
 
-Once opened, you should see the new **Batocera Web Services — Netflix-Inspired Theme**. 🎬🎮
+Once opened, you should see the new **Batocera Web Services — Netflix-Inspired Theme**. 
 
 
 ---
 
-# ⚠️ Important
+# Important
 
 Make sure **both files are replaced**.
 
@@ -111,7 +111,7 @@ It is also recommended to keep a backup of your original files before installing
 
 ---
 
-# ❤️ Free to Use
+# Free to Use
 
 This theme is completely **free to use and share**.
 
@@ -119,4 +119,4 @@ Feel free to customize it, improve it and make it your own.
 
 If you enjoy the theme, sharing it with other Batocera users is always appreciated!
 
-## 🎮 Enjoy your games!
+## Enjoy your games!
