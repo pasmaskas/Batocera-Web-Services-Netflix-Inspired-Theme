@@ -10,10 +10,6 @@ Give your Batocera setup a fresh, modern look with **Batocera Web Services**, a 
 * ℹ️ Game information popup with descriptions and artwork
 * 🎬 Integrated game video previews
 * ▶️ Video previews displayed directly over the game artwork
-* 📺 Automatic 16:9 presentation for artwork and videos
-* 🎮 System browsing with an easy-to-use carousel
-* ❤️ Favorites, play counts and achievement indicators
-* 📖 Support for manuals and maps where available
 * 📱 Responsive design for desktop, tablet and mobile devices
 * ⚡ Smooth scrolling and optimized loading for large game libraries
 
@@ -35,7 +31,7 @@ Before installing, it is recommended to make a backup of the original Batocera f
 
 ```text
 /usr/share/emulationstation/resources/services/index.html
-/usr/share/emulationstation/resources/services/logo-tri.png.png
+/usr/share/emulationstation/resources/services/logo-tri.png
 ```
 
 ## 2. Replace the files
@@ -49,7 +45,7 @@ index.html
 
 ```text
 logo.png
-→ /usr/share/emulationstation/resources/services/logo-tri.png.png
+→ /usr/share/emulationstation/resources/services/logo-tri.png
 ```
 
 Make sure **both files are replaced**.
@@ -71,6 +67,35 @@ After saving the overlay, reboot Batocera or restart the relevant service to see
 That's it! 🎉
 
 Your **Batocera Web Services** page should now use the new Netflix-inspired design.
+
+## 5. Open the Web Interface
+
+Open the Batocera Web Services interface in your browser:
+
+**Using the Batocera hostname:**
+
+```text
+http://batocera:1234
+```
+
+Or, if the hostname does not work, use the **IP address of your Batocera system**:
+
+```text
+http://YOUR-BATOCERA-IP:1234
+```
+
+For example:
+
+```text
+http://192.168.1.100:1234
+```
+
+You can find the IP address of your Batocera system under:
+
+**Main Menu → Network Settings**
+
+Once opened, you should see the new **Batocera Web Services — Netflix-Inspired Theme**. 🎬🎮
+
 
 ---
 
