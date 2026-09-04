@@ -2,6 +2,8 @@
 
 Give your Batocera setup a fresh, modern look with **Batocera Web Services**, a sleek Netflix-inspired web interface designed to make browsing and launching your games feel more like a streaming service.
 
+<img width="1919" height="1034" alt="image" src="https://github.com/user-attachments/assets/a183e432-8aca-47cb-8faf-162f19de297d" />
+
 ## 🎮 Features
 
 * 🌑 Modern dark interface with a Netflix-inspired design
