@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Batocera Web Services</title>
+<link rel="icon" type="image/png" href="logo-tri.png">
+<!-- bootstrap -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!-- fonts icons -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+<!-- inline CSS -->
+<style>
+:root {
+    --netflix-red: #E50914;
+    --netflix-black: #141414;
+    --netflix-dark-gray: #181818;
+    --netflix-card-bg: #2F2F2F;
+    --netflix-light-gray: #AAA;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+body {
+    background-color: var(--netflix-black);
+    color: #FFFFFF;
+    min-height: 100vh;
+    padding-top: 140px;
+    padding-bottom: 115px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--netflix-black); }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--netflix-red); }
+
+/* Header Navbar */
+.navbar {
+    background-color: rgba(20, 20, 20, 0.98) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 12px;
+}
+
+.brand-title {
+    font-family: "Bebas Neue", sans-serif;
+    color: var(--netflix-red);
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2.2rem;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+/* Buttons at the top */
+.btn-netflix {
+    background-color: var(--netflix-red);
+    color: #FFF;
+    font-weight: 700;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    font-size: 1.05rem;
+    transition: background-color 0.2s;
+}
+.btn-netflix:hover {
+    background-color: #F40612;
+    color: #FFF;
+}
+
+.btn-netflix-secondary {
+    background-color: rgba(109, 109, 110, 0.7);
+    color: #FFF;
+    font-weight: 700;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    font-size: 1.05rem;
+    transition: background-color 0.2s;
+}
+.btn-netflix-secondary:hover {
+    background-color: rgba(109, 109, 110, 0.4);
+    color: #FFF;
+}
+
+.jumbo-container { width: 100%; }
+
+.jumbo {
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 6px 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gameName {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    cursor: pointer;
+}
+
+.sysName {
+    font-size: 0.75rem;
+    color: var(--netflix-red);
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Catalog Grid */
+.main-content {
+    padding: 10px 4px;
+}
+
+.games-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 6px;
+}
+
+/* Game card */
+.card-game {
+    width: calc(33.333% - 4px);
+    background-color: var(--netflix-card-bg);
+    border: none;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-game:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+}
+
+.card-img-container {
+    width: 100%;
+    background-color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-img-cover {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: fill;
+}
+
+.card-title-container {
+    padding: 4px 2px 2px 2px;
+    background: var(--netflix-card-bg);
+}
+
+.card-game-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    color: #FFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-title-marquee {
+    max-height: 30px;
+    max-width: 100%;
+    object-fit: fill;
+    display: block;
+    margin: 0 auto;
+}
+
+.card-body-custom {
+    padding: 2px 2px 4px 2px;
+    font-size: 0.6rem;
+    color: var(--netflix-light-gray);
+}
+
+.badge-netflix {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #DDD;
+    font-size: 0.55rem;
+    padding: 1px 3px;
+    border-radius: 3px;
+    margin: 1px;
+    display: inline-block;
+}
+
+/* Game action buttons */
+.card-footer-custom {
+    padding: 8px 4px;
+    background-color: var(--netflix-card-bg);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: auto;
+    flex-wrap: wrap;
+}
+
+.card-footer-custom .btn {
+    font-size: 0.95rem;
+    padding: 6px 12px;
+    flex: 1;
+    max-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Desktop & tablet responsive breakpoints */
+@media (min-width: 768px) {
+    body { padding-top: 90px; padding-bottom: 75px; }
+    .main-content { padding: 10px 15px; }
+    .games-grid { gap: 12px; }
+    .card-game { width: calc(16.666% - 10px); }
+    .card-game-title { font-size: 0.85rem; }
+    .card-body-custom { font-size: 0.7rem; }
+    .card-footer-custom .btn { font-size: 1.1rem; padding: 8px 16px; max-width: 70px; }
+    .gameName { font-size: 1.1rem; max-width: 350px; }
+    .sysName { font-size: 0.85rem; }
+    .btn-text { display: inline !important; }
+}
+
+.btn-text { display: none; }
+
+/* Bottom system carousel (2x2 grid op mobiel) */
+.navbar-fixed-bottom-custom {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    background: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+}
+
+.system-carousel-wrapper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.carousel-container-inner {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.sys-btn {
+    padding: 0;
+    display: block; 
+    align-items: center;
+    justify-content: center;
+}
+
+.sys-btn .btn-dark {
+    width: 100%;
+    height: 44px;
+    background-color: #1c1c1c;
+    border: none;
+    border-radius: 0;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.sys-btn .btn-dark:hover, .sys-btn .btn-dark.active {
+    background-color: #2a2a2a;
+    box-shadow: inset 0 0 0 1px var(--netflix-red);
+}
+
+.sys-btn .btn-dark img {
+    height: 32px;
+    max-width: 85%;
+    object-fit: fill;
+}
+
+/* Side navigation buttons */
+.carousel-btn-side {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 88px;
+    background-color: var(--netflix-red);
+    border: none;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 20;
+    transition: background-color 0.2s;
+    text-decoration: none !important;
+}
+
+@media (min-width: 768px) {
+    .carousel-btn-side {
+        height: 44px;
+    }
+}
+
+.carousel-btn-side:hover {
+    background-color: #F40612;
+    color: #FFF;
+}
+
+.modal-content {
+    background-color: var(--netflix-dark-gray);
+    color: #FFF;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#loading-indicator {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hide loading indicator by default */
+#loading-indicator.hidden {
+    display: none !important;
+}
+/* Game detail media */
+.detail-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.detail-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 6px;
+}
+.detail-video-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(229, 9, 20, 0.95);
+    color: #fff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.55rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,.65);
+    z-index: 5;
+    cursor: pointer;
+}
+.detail-video-play:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+    background: #F40612;
+}
+.detail-video-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 6;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.detail-video-container video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    background: #000;
+}
+.detail-media.has-video .detail-video-play {
+    display: flex;
+}
+.detail-media.is-playing .detail-video-container {
+    display: block;
+}
+.detail-media.is-playing .detail-video-play,
+.detail-media.is-playing #detailModalImg {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+<!-- See REST Api list on https://github.com/batocera-linux/batocera-emulationstation/blob/master/es-app/src/services/HttpServerThread.cpp#L25 -->
+<script type='text/javascript'>
+
+function reloadGamelists() {
+    fetch('/reloadgames');
+}
+
+function emuKill() {
+    fetch('/emukill');
+}
+
+function launchGame(game) {
+    fetch('/launch', {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: game
+    });
+}
+
+function escapeHtml(unsafe) {
+    return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function escapeRom(unsafe) {
+    return unsafe
+    .replace(/'/g, "");
+}
+
+function getVideoPath(imageUrl, thumbUrl) {
+    // Batocera serves game media through URLs like:
+    // /systems/<system>/games/<game-id>/media/image
+    // The matching video is exposed through the same game-id:
+    // /systems/<system>/games/<game-id>/media/video
+    var mediaUrl = imageUrl || thumbUrl || "";
+    if (!mediaUrl) return "";
+
+    // Replace the final media type (image/thumbnail/etc.) with video.
+    if (/\/media\/[^/?#]+(?:[?#].*)?$/.test(mediaUrl)) {
+        return mediaUrl.replace(/\/media\/[^/?#]+(?:[?#].*)?$/, "/media/video");
+    }
+
+    return "";
+}
+
+function detailFill(ev) {
+    let title = ev.currentTarget.getAttribute('data-name');
+    var mtitle = document.getElementById("detailModalLabel");
+    let arg = ev.currentTarget.getAttribute('data-desc');
+    var marg = document.getElementById("detailModalBody");
+    let thumb = ev.currentTarget.getAttribute('data-thumb');
+    let img = ev.currentTarget.getAttribute('data-image');
+    var pic = document.getElementById("detailModalImg");
+    var media = document.getElementById("detailModalMedia");
+    var video = document.getElementById("detailModalVideo");
+    var playButton = media ? media.querySelector('.detail-video-play') : null;
+
+    mtitle.innerHTML = title || "";
+    marg.innerHTML = arg || "";
+
+    // Keep Batocera's original image URL exactly as supplied.
+    pic.src = img || thumb || "";
+
+    // Reset video state and hide the play button until a video is confirmed.
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    media.classList.remove("is-playing", "has-video");
+    if (playButton) playButton.style.display = "none";
+
+    // Batocera exposes the matching video through the same game media API.
+    var videoPath = getVideoPath(img, thumb);
+    if (!videoPath) return;
+
+    // Let the browser request only the video's metadata. If Batocera returns
+    // a valid video, loadedmetadata fires and only then do we show Play.
+    video.preload = "metadata";
+    video.onloadedmetadata = function() {
+        media.classList.add("has-video");
+        if (playButton) playButton.style.display = "flex";
+    };
+    video.onerror = function() {
+        media.classList.remove("has-video", "is-playing");
+        if (playButton) playButton.style.display = "none";
+    };
+    video.src = videoPath;
+    video.load();
+}
+
+function playDetailVideo(ev) {
+    if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    }
+
+    var media = document.getElementById("detailModalMedia");
+    var video = document.getElementById("detailModalVideo");
+
+    if (!media || !video || !media.classList.contains("has-video")) return;
+
+    media.classList.add("is-playing");
+    var promise = video.play();
+    if (promise && promise.catch) {
+        promise.catch(function(error) {
+            console.warn("Video kon niet automatisch starten.", error);
+            media.classList.remove("is-playing");
+        });
+    }
+}
+
+// Virtual scrolling variables
+let currentGames = [];
+let visibleGames = [];
+const GAMES_PER_BATCH = 50;
+let currentBatch = 0;
+let isLoading = false;
+let gameScrollObserver = null;
+let currentSystemName = null;
+let loadingCancelled = false;
+
+function showGames(arr) {
+    currentGames = arr.filter(game => game.hidden !== "true");
+    currentBatch = 0;
+    visibleGames = [];
+    loadingCancelled = false;
+
+    // Clear existing content and observer
+    const gameList = document.getElementById("gameList");
+    gameList.innerHTML = '';
+
+    if (gameScrollObserver) {
+        gameScrollObserver.disconnect();
+        gameScrollObserver = null;
+    }
+
+    // Create the main container
+    gameList.innerHTML = '<div class="games-grid" id="gameContainer"></div>';
+
+    // Show initial batch
+    loadMoreGames();
+
+    // Set up intersection observer for infinite scroll only if there are more games to load
+    if (currentGames.length > GAMES_PER_BATCH) {
+        setupInfiniteScroll();
+    }
+}
+
+function loadMoreGames() {
+    if (isLoading || loadingCancelled || currentBatch * GAMES_PER_BATCH >= currentGames.length) {
+        return;
+    }
+
+    isLoading = true;
+    const startIndex = currentBatch * GAMES_PER_BATCH;
+    const endIndex = Math.min(startIndex + GAMES_PER_BATCH, currentGames.length);
+    const batch = currentGames.slice(startIndex, endIndex);
+
+    // Create game cards
+    const gameContainer = document.getElementById("gameContainer");
+
+    batch.forEach(game => {
+        if (loadingCancelled) return; // Stop if cancelled
+        const cardElement = createGameCardElement(game);
+        gameContainer.appendChild(cardElement);
+        visibleGames.push(game);
+    });
+
+    currentBatch++;
+    isLoading = false;
+
+    // Hide loading indicator if all games are loaded
+    const loadingIndicator = document.getElementById("loading-indicator");
+    if (loadingIndicator && currentBatch * GAMES_PER_BATCH >= currentGames.length) {
+        loadingIndicator.classList.add('hidden');
+    }
+}
+
+function createGameCardElement(game) {
+    const regex = /^\d\d\d\d/;
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card card-game';
+
+    let cardHtml = '';
+
+    // Image handling
+    if (game.thumbnail)
+        cardHtml += '<div class="card-img-container"><img class="card-img-cover" loading="lazy" src="' + game.thumbnail + '"></div>';
+    else if (game.image)
+        cardHtml += '<div class="card-img-container"><img class="card-img-cover" loading="lazy" src="' + game.image + '"></div>';
+
+    // Title/Marquee
+    cardHtml += '<div class="card-title-container">';
+    if (game.marquee)
+        cardHtml += '<img class="card-title-marquee" loading="lazy" src="' + game.marquee + '" title="' + escapeHtml(game.name) + '">';
+    else
+        cardHtml += '<div class="card-game-title" title="' + escapeHtml(game.name) + '">' + game.name + '</div>';
+    cardHtml += '</div>';
+
+    cardHtml += '<div class="card-body-custom text-center">';
+
+    // Genre
+    if (game.genre) {
+        cardHtml += '<span class="badge-netflix">' + game.genre + '</span>';
+    }
+
+    // Release date
+    if (game.releasedate && regex.test(game.releasedate)) {
+        cardHtml += '<span class="badge-netflix">' + game.releasedate.match(regex) + '</span>';
+    }
+
+    // Icons
+    if (game.cheevosHash && parseInt(game.cheevosHash) != 0) {
+        cardHtml += '<span class="badge-netflix"><i class="fa fa-trophy"></i></span>';
+    }
+    if (game.favorite == "true") {
+        cardHtml += '<span class="badge-netflix"><i class="fa fa-star"></i></span>';
+    }
+
+    // Play count
+    if (game.playcount && parseInt(game.playcount) > 0) {
+        cardHtml += '<span class="badge-netflix">' + game.playcount + 'x</span>';
+    } else {
+        cardHtml += '<span class="badge-netflix">Never played</span>';
+    }
+
+    cardHtml += '</div>'; // card-body-custom
+
+    cardHtml += '<div class="card-footer-custom">';
+    cardHtml += '<button type="button" class="btn btn-netflix" onClick="launchGame(\'' + escapeRom(game.path) + '\')" title="Play"><i class="fas fa-play"></i></button>';
+    if (game.desc) {
+        cardHtml += '<button type="button" class="btn btn-netflix-secondary" data-toggle="modal" data-target="#detailModal" data-desc="' + escapeHtml(game.desc) +
+            '" data-name="' + escapeHtml(game.name) + '" data-thumb="' + (game.thumbnail || '') +
+            '" data-image="' + (game.image || '') + '" data-path="' + escapeHtml(game.path || '') +
+            '" data-system="' + escapeHtml(currentSystemName || '') + '" onClick="detailFill(event)" title="Info"><i class="fas fa-info-circle"></i></button>';
+    }
+    if (game.manual) {
+        cardHtml += '<button type="button" class="btn btn-netflix-secondary" onClick="window.open(\'' + game.manual + '\', \'_blank\', \'noopener,noreferrer\')" title="Manual"><i class="fas fa-book"></i></button>';
+    }
+    if (game.map) {
+        cardHtml += '<button type="button" class="btn btn-netflix-secondary" onClick="window.open(\'' + game.map + '\', \'_blank\', \'noopener,noreferrer\')" title="Map"><i class="fas fa-map"></i></button>';
+    }
+    cardHtml += '</div>'; // card-footer-custom
+
+    cardDiv.innerHTML = cardHtml;
+    return cardDiv;
+}
+
+function setupInfiniteScroll() {
+    // Create loading indicator - place it after the game container
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loading-indicator';
+    loadingDiv.className = 'w-100 text-center p-3';
+    loadingDiv.innerHTML = '<div class="spinner-border text-light" role="status"><span class="sr-only">Loading more games...</span></div><p class="text-light mt-2">Loading more games...</p>';
+
+    // Insert the loading indicator after the game container
+    const gameContainer = document.getElementById("gameContainer");
+    const gameList = document.getElementById("gameList");
+    const rowContainer = gameContainer.parentElement;
+    rowContainer.appendChild(loadingDiv);
+
+    // Set up intersection observer
+    gameScrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !isLoading && !loadingCancelled && currentBatch * GAMES_PER_BATCH < currentGames.length) {
+                // Add a small delay to prevent rapid firing
+                setTimeout(() => {
+                    if (!isLoading && !loadingCancelled && currentBatch * GAMES_PER_BATCH < currentGames.length) {
+                        loadMoreGames();
+                    }
+                }, 100);
+            }
+        });
+    }, {
+        root: null, // Use viewport as root
+        rootMargin: '100px', // Start loading when 100px before the element comes into view
+        threshold: 0.1
+    });
+
+    gameScrollObserver.observe(loadingDiv);
+}
+
+function getOrder(prop) {
+    return function(a, b) {
+        if (a[prop] > b[prop]) {
+            return 1;
+        } else if (a[prop] < b[prop]) {
+            return -1;
+        }
+        return 0;
+    }
+}
+
+function loadGames(name) {
+    // Cancel any ongoing loading
+    loadingCancelled = true;
+    currentSystemName = name;
+
+    // Disconnect existing observer immediately
+    if (gameScrollObserver) {
+        gameScrollObserver.disconnect();
+        gameScrollObserver = null;
+    }
+
+    // Show loading state
+    document.getElementById("gameList").innerHTML = '<div class="text-center p-5"><div class="spinner-border text-light" role="status"><span class="sr-only">Loading...</span></div><p class="mt-3">Loading games...</p></div>';
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Only process if this is still the current system
+            if (currentSystemName === name) {
+                var myArr = JSON.parse(this.responseText);
+                myArr.sort(getOrder("name"));
+                showGames(myArr);
+            }
+        }
+    };
+    xhr.open('GET', '/systems/' + name + '/games');
+    xhr.send();
+}
+
+function removeItem(arr, value) {
+    var index = arr.indexOf(value);
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+    return arr;
+}
+
+function showSystems(arr) {
+    var nb_sys = 4;
+    var sz_sys = "col-6 col-md-3";
+
+    var out = '';
+    var i;
+    // Filter visible systems
+    arr = arr.filter(function(system) {
+        return system.visible == "true";
+    });
+
+    for (i = 0; i < arr.length; i++) {
+        if (i % nb_sys == 0) {
+            if (i == 0)
+                out += '<div class="carousel-item active">';
+            else
+                out += '<div class="carousel-item">';
+            out += '<div class="row no-gutters">';
+        }
+        if (arr[i].logo) {
+            out += '<div class="' + sz_sys + ' sys-btn"><a onclick="javascript:loadGames(\'' + arr[i].name + '\')" href="#"><button type="button" class="btn btn-dark"><img src="' + arr[i].logo + '"></button></a></div>';
+        } else {
+            out += '<div class="' + sz_sys + ' sys-btn"><a onclick="javascript:loadGames(\'' + arr[i].name + '\')" href="#"><button type="button" class="btn btn-dark">' + arr[i].fullname + '</button></a></div>';
+        }
+        if (i % nb_sys == (nb_sys - 1) || i == arr.length - 1)
+            out += '</div></div>'; // row carousel-item
+    }
+
+    var carouselInner = document.querySelector('#sysCarousel .carousel-inner');
+    if (carouselInner) {
+        carouselInner.innerHTML = out;
+    }
+}
+
+function describe(d) {
+    var out = "";
+
+    if (d.msg) {
+        if (d.msg == "NO GAME RUNNING") {
+            out += '<div class="gameName" id="gameName">No game running</div>';
+            return (out);
+        }
+        if (d.msg == "ERROR") {
+            out += '<div class="gameName" id="gameName">Notification service unreachable</div>';
+            return (out);
+        }
+    }
+    out += '<div class="d-flex align-items-center justify-content-center">';
+    if (d.image) {
+        out += '<div class="mr-2"><img src="' + d.image + '" class="rounded" id="imgArt" width="36" height="36" style="object-fit:cover;"></div>';
+    } else if (d.thumbnail) {
+        out += '<div class="mr-2"><img src="' + d.thumbnail + '" class="rounded" id="imgArt" width="36" height="36" style="object-fit:cover;"></div>';
+    }
+    out += '<div class="text-left">';
+    if (d.systemName) {
+        var url = "/systems/" + d.systemName + "/logo";
+        fetch(url).then(response => response.blob())
+            .then((blob) => {
+                const imgE = document.createElement('img');
+                const imgUrl = URL.createObjectURL(blob);
+                imgE.src = imgUrl;
+                imgE.style.height = "16px";
+                const container = document.getElementById("sysName");
+                if (container) {
+                    container.innerHTML = '';
+                    container.appendChild(imgE);
+                }
+            });
+        out += '<div class="sysName" id="sysName" title="">' + d.systemName + '</div>';
+    }
+    if (d.name) {
+        out += '<div class="gameName" id="gameName" title="">' + d.name + '</div>';
+    }
+    out += '</div></div>';
+    return (out);
+}
+
+var PREVDATA = null;
+
+$(document).ready(function() {
+    fetch('/systems')
+    .then(response => response.json())
+    .then(data => {
+        showSystems(data);
+    });
+
+    var latestOutput = document.getElementById("jumbo");
+    // Construct the WebSocket URL based on the current location of the web page
+    var wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    var wsHost = location.host;
+    wsHost = wsHost.split(':')[0]+":8080"
+    var wsUrl = wsProtocol + '//' + wsHost + '/';
+    var ws = new WebSocket(wsUrl);
+    ws.onmessage = function(event) {
+        var d = event.data;
+        if (PREVDATA != d) {
+            var dd = JSON.parse(d);
+            latestOutput.innerHTML = describe(dd);
+            PREVDATA = d;
+        }
+    };
+    ws.onclose = function() {
+        var message = { "msg": "ERROR" };
+        latestOutput.innerHTML = describe(message);
+    };
+});
+
+
+$(document).on('hidden.bs.modal', '#detailModal', function() {
+    var video = document.getElementById('detailModalVideo');
+    if (video) {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+    }
+    var media = document.getElementById('detailModalMedia');
+    if (media) media.classList.remove('is-playing');
+});
+</script>
+
+<!-- Modal windows -->
+<div class="modal fade" id="killModal" tabindex="-1" role="dialog" aria-labelledby="KillModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="KillModalLabel"><i class="fas fa-exclamation-triangle text-danger mr-2"></i>Are you sure?</h5>
+</div>
+<div class="modal-body text-secondary">
+Confirm you want to kill the running emulator and game.
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button> <button type="button" class="btn btn-netflix" data-dismiss="modal" onclick="emuKill()">Kill it!</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title font-weight-bold" id="detailModalLabel"></h5>
+</div>
+<div class="modal-body">
+<div class="row">
+<div class="col-md-5 mb-3 mb-md-0 text-center">
+<div class="detail-media" id="detailModalMedia">
+<img class="img-fluid rounded shadow" loading="lazy" src="" id="detailModalImg">
+<div class="detail-video-container" id="detailVideoContainer">
+<video id="detailModalVideo" controls playsinline preload="metadata">
+Your browser does not support HTML5 video.
+</video>
+</div>
+<button type="button" class="detail-video-play" aria-label="Play video" onclick="playDetailVideo(event)"><i class="fas fa-play"></i></button>
+</div>
+</div>
+<div class="col-md-7">
+<p class="text-light" id="detailModalBody" style="line-height:1.6; font-size:0.9rem;"></p>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- navbars -->
+<nav class="navbar fixed-top">
+<div class="container-fluid p-0 d-flex flex-column">
+<div class="w-100 d-flex align-items-center justify-content-between mb-2">
+<span onclick="location.reload();" class="brand-title" role="button">
+BATOCERA
+</span>
+<div class="d-flex align-items-center">
+<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" data-toggle="collapse" data-target="#systemList" aria-expanded="true" aria-controls="systemList" id="showSystems" title="Systems">
+<i class="fas fa-th"></i><span class="btn-text ml-1">Systems</span>
+</button>
+<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" data-toggle="collapse" data-target="#jumbo-container" id="showNotifs" title="Current Game">
+<i class="fas fa-play-circle"></i><span class="btn-text ml-1">Current</span>
+</button>
+<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" onclick="reloadGamelists()" title="Reload">
+<i class="fas fa-sync-alt"></i>
+</button>
+<button type="button" class="btn btn-netflix btn-sm" data-toggle="modal" data-target="#killModal" title="Kill">
+<i class="fas fa-power-off"></i><span class="btn-text ml-1">Kill</span>
+</button>
+</div>
+</div>
+
+<div class="collapse show jumbo-container" id="jumbo-container">
+<div class="jumbo" id="jumbo"></div>
+</div>
+</div>
+</nav>
+
+<div class="main-content">
+<div id="gameList"></div>
+</div>
+
+<div class="navbar-fixed-bottom-custom collapse show" id="systemList">
+<div class="system-carousel-wrapper">
+
+<a class="carousel-btn-side" href="#sysCarousel" role="button" data-slide="prev">
+<i class="fas fa-chevron-left"></i>
+</a>
+
+<div class="carousel-container-inner">
+<div id="sysCarousel" class="carousel slide" data-touch="true" data-interval="false" data-ride="carousel">
+<div class="carousel-inner"></div>
+</div>
+</div>
+
+<a class="carousel-btn-side" href="#sysCarousel" role="button" data-slide="next">
+<i class="fas fa-chevron-right"></i>
+</a>
+
+</div>
+</div>
+
+</body>
+</html>
