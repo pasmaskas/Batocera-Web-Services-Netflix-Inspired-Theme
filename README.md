@@ -60,7 +60,7 @@ Connect to your Batocera system via **SSH** and run:
 batocera-save-overlay
 ```
 
-This saves the changes to the Batocera overlay so they remain after a reboot or system update.
+This saves the changes to the Batocera overlay so they remain after a reboot.
 
 ## 4. Restart Batocera
 
