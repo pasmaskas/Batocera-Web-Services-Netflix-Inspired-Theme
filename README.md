@@ -23,6 +23,8 @@ Clicking the button plays the video **on top of the artwork**, using the same 16
 
 Games without an available video will simply display their artwork without a play button.
 
+https://youtu.be/Hv72GlUHEc0?is=lr_xlN7ykkbW8MI4
+
 ---
 
 # Installation
