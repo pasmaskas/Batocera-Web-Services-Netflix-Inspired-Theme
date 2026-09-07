@@ -23,6 +23,8 @@ Clicking the button plays the video **on top of the artwork**, using the same 16
 
 Games without an available video will simply display their artwork without a play button.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Hv72GlUHEc0?si=wOx80Ya4xgVBJ5HS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ---
 
 # Installation
