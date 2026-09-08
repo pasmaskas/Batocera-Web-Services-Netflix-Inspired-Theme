@@ -15,6 +15,16 @@ Give your Batocera setup a fresh, modern look with this **Batocera Web Services 
 * Responsive design for desktop, tablet and mobile devices
 * Smooth scrolling and optimized loading for large game libraries
 
+---
+
+## What's New in v2.0! (Coming-Soon)
+
+*Home Screen with Console Lists:** A brand-new homepage displaying all your gaming consoles and system lists with smooth horizontal scrolling.
+*Global Live Search:** Added an instant search bar to search for any game by title across all your consoles at once.
+*Consolidated Pop-Up Modal:** Cleaned up the game cards! All detailed game information, descriptions, video previews, badges, manuals, and the **Play button** have been moved directly into the interactive detail pop-up modal.
+
+---
+
 ## Game Video Previews
 
 If a game has a video available, a **play button** appears directly on the game artwork.
