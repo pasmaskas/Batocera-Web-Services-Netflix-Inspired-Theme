@@ -1,10 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang='en'>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Batocera Web Services</title>
 <link rel="icon" type="image/png" href="logo-tri.png">
+<link rel="apple-touch-icon" href="logo-ios.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Batocera">
 <!-- bootstrap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -53,6 +57,253 @@ body {
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--netflix-red); }
 
+
+/* Netflix-style Batocera Home */
+#homeScreen {
+    display: block;
+    padding: 4px 8px 35px;
+}
+
+.home-hero {
+    position: relative;
+    padding: 4px 4px 18px;
+    aspect-ratio: 16 / 9;
+    max-height: 420px;
+    min-height: 170px;
+    display: flex;
+    align-items: flex-end;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 4px;
+    background: #141414;
+    cursor: pointer;
+    box-shadow: 0 10px 26px rgba(0,0,0,.6);
+}
+
+.home-hero-slides {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    height: 100%;
+    transition: transform 0.4s ease;
+    touch-action: pan-y;
+}
+
+.home-hero-slide {
+    position: relative;
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.home-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: none;
+}
+
+.home-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 12px 12px 4px;
+    min-height: 44px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.home-hero-marquee {
+    max-height: 95px;
+    max-width: 78%;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 10px rgba(0,0,0,.8));
+}
+
+.home-hero-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 2rem;
+    letter-spacing: .8px;
+    text-shadow: 0 2px 6px rgba(0,0,0,.95), 0 4px 16px rgba(0,0,0,.85), 0 0 30px rgba(0,0,0,.6);
+}
+
+.system-row {
+    margin: 0 0 24px;
+}
+
+.system-row-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0 4px 8px;
+}
+
+.system-row-title {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.system-row-logo {
+    height: 30px;
+    max-width: 150px;
+    object-fit: contain;
+}
+
+.system-row-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.system-row-count {
+    color: #888;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.system-row-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    padding: 4px 4px 12px;
+    scrollbar-width: thin;
+}
+
+.system-row-scroll::-webkit-scrollbar {
+    height: 5px;
+}
+
+/* --- HOMESCREEN AANPASSINGEN --- */
+.home-game {
+    flex: 0 0 auto;
+    background: var(--netflix-card-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,.5);
+    scroll-snap-align: start;
+    transition: transform .18s ease, box-shadow .18s ease;
+    cursor: pointer;
+}
+
+.home-game:focus-visible { outline: 2px solid var(--netflix-red); outline-offset: 2px; }
+
+.home-game:hover {
+    transform: scale(1.045);
+    box-shadow: 0 8px 18px rgba(0,0,0,.8);
+    z-index: 2;
+}
+
+.home-game-media {
+    height: 200px;
+    width: auto;
+    background: #111;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-game-media img {
+    height: 100%;
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.home-game-no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px;
+    color: #aaa;
+    font-weight: 700;
+    font-size: .8rem;
+}
+
+.home-game-play {
+    position: absolute;
+    right: 7px;
+    bottom: 7px;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--netflix-red);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .15s, transform .15s;
+    cursor: pointer;
+}
+
+.home-game:hover .home-game-play,
+.home-game:focus-within .home-game-play {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.home-game-title {
+    padding: 8px 8px 9px;
+    font-size: .78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.home-see-all {
+    border: 0;
+    background: transparent;
+    color: #aaa;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.home-see-all:hover {
+    color: #fff;
+}
+
+body.home-mode {
+    padding-top: 140px;
+    padding-bottom: 15px;
+}
+
+body.games-mode {
+    padding-top: 140px;
+    padding-bottom: 115px;
+}
+
+@media (min-width: 768px) {
+    body.home-mode { padding-top: 90px; padding-bottom: 15px; }
+    body.games-mode { padding-top: 90px; padding-bottom: 75px; }
+    #homeScreen { padding: 8px 15px 40px; }
+    .home-hero { aspect-ratio: auto; min-height: 190px; max-height: none; }
+    .home-hero h1 { font-size: 2.8rem; }
+    .home-game-media { height: 260px; }
+    .home-game { flex-basis: auto; width: auto; }
+    .home-game-title { font-size: .85rem; }
+}
+
 /* Header Navbar */
 .navbar {
     background-color: rgba(20, 20, 20, 0.98) !important;
@@ -70,6 +321,7 @@ body {
     letter-spacing: 0.5px;
     display: flex;
     align-items: center;
+    line-height: 1; /* Vertikale uitlijning met knoppen */
 }
 
 /* Buttons at the top */
@@ -136,21 +388,101 @@ body {
     cursor: pointer;
 }
 
+/* Search bar */
+.search-bar {
+    margin: 0 -12px 0px;
+    padding: 0 12px 4px;
+}
+.search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+.search-input-wrap i:first-child {
+    color: rgba(255,255,255,0.6);
+    margin-right: 8px;
+}
+.search-input-wrap input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    width: 100%;
+    font-size: 1rem;
+}
+.search-dice {
+    background: none;
+    border: none;
+    color: var(--netflix-red);
+    padding: 0 6px;
+    font-size: 1.6rem;
+    line-height: 1;
+}
+.search-close {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    padding: 0 0 0 8px;
+}
+.search-results {
+    max-height: 55vh;
+    overflow-y: auto;
+    margin-top: 6px;
+}
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.search-result-item:hover, .search-result-item:focus-visible {
+    background: rgba(255,255,255,0.08);
+}
+.search-result-item img, .search-result-noimg {
+    width: 42px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #222;
+    flex-shrink: 0;
+}
+.search-result-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.search-result-system {
+    font-size: 0.72rem;
+    color: var(--netflix-red);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+.search-empty {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    padding: 10px 4px;
+}
+
 /* Catalog Grid */
 .main-content {
     padding: 10px 4px;
 }
 
+/* --- CONSOLE / CATALOGUS GRID AANPASSINGEN --- */
 .games-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: 6px;
+    gap: 10px;
 }
 
-/* Game card */
 .card-game {
-    width: calc(33.333% - 4px);
+    width: calc((100% - 20px) / 3);
     background-color: var(--netflix-card-bg);
     border: none;
     border-radius: 6px;
@@ -168,17 +500,32 @@ body {
 
 .card-img-container {
     width: 100%;
+    flex: 1 1 auto;
     background-color: #111;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-img-backdrop {
+    position: absolute;
+    inset: -12%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(18px) brightness(0.45);
+    transform: scale(1.1);
+    z-index: 0;
 }
 
 .card-img-cover {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: auto;
     display: block;
-    object-fit: fill;
+    object-fit: contain;
 }
 
 .card-title-container {
@@ -258,7 +605,7 @@ body {
 
 .btn-text { display: none; }
 
-/* Bottom system carousel (2x2 grid op mobiel) */
+/* Bottom system carousel */
 .navbar-fixed-bottom-custom {
     position: fixed;
     bottom: 0;
@@ -357,10 +704,10 @@ body {
     justify-content: center;
 }
 
-/* Hide loading indicator by default */
 #loading-indicator.hidden {
     display: none !important;
 }
+
 /* Game detail media */
 .detail-media {
     position: relative;
@@ -431,11 +778,101 @@ body {
 .detail-media.is-playing #detailModalImg {
     display: none;
 }
+
+.detail-marquee-wrap {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.detail-marquee-img {
+    max-height: 56px;
+    max-width: 80%;
+    padding-top: 5px;
+    object-fit: contain;
+    display: inline-block;
+}
+.detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 12px;
+}
+.detail-badges .badge-netflix {
+    font-size: 0.75rem;
+    padding: 4px 9px;
+}
+.detail-desc-text {
+    margin-top: 12px;
+}
+.detail-footer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.detail-footer-extras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.detail-footer-main {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.card-game, .home-game {
+    cursor: pointer;
+}
+.card-game:focus-visible, .home-game:focus-visible {
+    outline: 2px solid var(--netflix-red);
+    outline-offset: 2px;
+}
+
+#splashScreen {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1s ease;
+}
+#splashScreen.splash-hide {
+    opacity: 0;
+    pointer-events: none;
+}
+.splash-title {
+    font-family: "Bebas Neue", sans-serif;
+    color: var(--netflix-red);
+    font-weight: 400;
+    font-style: normal;
+    font-size: 4.5rem;
+    letter-spacing: 3px;
+    opacity: 0;
+    animation: fadeInTitle 1s forwards ease-in-out;
+}
+@keyframes fadeInTitle {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 </style>
 </head>
 
 <body>
-<!-- See REST Api list on https://github.com/batocera-linux/batocera-emulationstation/blob/master/es-app/src/services/HttpServerThread.cpp#L25 -->
+<div id="splashScreen"><span class="splash-title">BATOCERA</span></div>
+<script>
+setTimeout(function() {
+    var splash = document.getElementById('splashScreen');
+    if (!splash) return;
+    splash.classList.add('splash-hide');
+    setTimeout(function() { splash.remove(); }, 1000);
+}, 2000);
+</script>
+
 <script type='text/javascript'>
 
 function reloadGamelists() {
@@ -469,14 +906,9 @@ function escapeRom(unsafe) {
 }
 
 function getVideoPath(imageUrl, thumbUrl) {
-    // Batocera serves game media through URLs like:
-    // /systems/<system>/games/<game-id>/media/image
-    // The matching video is exposed through the same game-id:
-    // /systems/<system>/games/<game-id>/media/video
     var mediaUrl = imageUrl || thumbUrl || "";
     if (!mediaUrl) return "";
 
-    // Replace the final media type (image/thumbnail/etc.) with video.
     if (/\/media\/[^/?#]+(?:[?#].*)?$/.test(mediaUrl)) {
         return mediaUrl.replace(/\/media\/[^/?#]+(?:[?#].*)?$/, "/media/video");
     }
@@ -484,37 +916,78 @@ function getVideoPath(imageUrl, thumbUrl) {
     return "";
 }
 
-function detailFill(ev) {
-    let title = ev.currentTarget.getAttribute('data-name');
+function fillDetailModal(data) {
+    var title = data.name || "";
     var mtitle = document.getElementById("detailModalLabel");
-    let arg = ev.currentTarget.getAttribute('data-desc');
+    var arg = data.desc || "";
     var marg = document.getElementById("detailModalBody");
-    let thumb = ev.currentTarget.getAttribute('data-thumb');
-    let img = ev.currentTarget.getAttribute('data-image');
+    var thumb = data.thumb || "";
+    var img = data.image || "";
+    var marquee = data.marquee || "";
+    var path = data.path || "";
+    var manual = data.manual || "";
+    var map = data.map || "";
+    var genre = data.genre || "";
+    var releasedate = data.releasedate || "";
+    var playcount = data.playcount || "";
+    var favorite = data.favorite || "";
+    var cheevos = data.cheevos || "";
+
     var pic = document.getElementById("detailModalImg");
     var media = document.getElementById("detailModalMedia");
     var video = document.getElementById("detailModalVideo");
     var playButton = media ? media.querySelector('.detail-video-play') : null;
+    var marqueeWrap = document.getElementById("detailMarqueeWrap");
+    var marqueeImg = document.getElementById("detailModalMarquee");
+    var badgesEl = document.getElementById("detailModalBadges");
+    var extrasEl = document.getElementById("detailModalExtras");
+    var playBtn = document.getElementById("detailModalPlay");
 
     mtitle.innerHTML = title || "";
     marg.innerHTML = arg || "";
 
-    // Keep Batocera's original image URL exactly as supplied.
+    if (marquee) {
+        marqueeImg.src = marquee;
+        marqueeImg.alt = title || "";
+        marqueeWrap.style.display = "block";
+    } else {
+        marqueeImg.src = "";
+        marqueeWrap.style.display = "none";
+    }
+
     pic.src = img || thumb || "";
 
-    // Reset video state and hide the play button until a video is confirmed.
+    var yearRegex = /^\d\d\d\d/;
+    var badgesHtml = "";
+    if (genre) badgesHtml += '<span class="badge-netflix">' + genre + '</span>';
+    if (releasedate && yearRegex.test(releasedate)) badgesHtml += '<span class="badge-netflix">' + releasedate.match(yearRegex) + '</span>';
+    if (cheevos && parseInt(cheevos) != 0) badgesHtml += '<span class="badge-netflix"><i class="fa fa-trophy"></i></span>';
+    if (favorite == "true") badgesHtml += '<span class="badge-netflix"><i class="fa fa-star"></i></span>';
+    if (playcount && parseInt(playcount) > 0) badgesHtml += '<span class="badge-netflix">' + playcount + 'x</span>';
+    else badgesHtml += '<span class="badge-netflix">Never played</span>';
+    if (badgesEl) badgesEl.innerHTML = badgesHtml;
+
+    var extrasHtml = "";
+    if (manual) extrasHtml += '<button type="button" class="btn btn-netflix-secondary" onClick="window.open(\'' + manual + '\', \'_blank\', \'noopener,noreferrer\')" title="Manual"><i class="fas fa-book"></i></button>';
+    if (map) extrasHtml += '<button type="button" class="btn btn-netflix-secondary" onClick="window.open(\'' + map + '\', \'_blank\', \'noopener,noreferrer\')" title="Map"><i class="fas fa-map"></i></button>';
+    if (extrasEl) extrasEl.innerHTML = extrasHtml;
+
+    if (playBtn) {
+        playBtn.onclick = function() {
+            launchGame(path);
+            $('#detailModal').modal('hide');
+        };
+    }
+
     video.pause();
     video.removeAttribute("src");
     video.load();
     media.classList.remove("is-playing", "has-video");
     if (playButton) playButton.style.display = "none";
 
-    // Batocera exposes the matching video through the same game media API.
-    var videoPath = getVideoPath(img, thumb);
+    var videoPath = data.video || getVideoPath(img, thumb);
     if (!videoPath) return;
 
-    // Let the browser request only the video's metadata. If Batocera returns
-    // a valid video, loadedmetadata fires and only then do we show Play.
     video.preload = "metadata";
     video.onloadedmetadata = function() {
         media.classList.add("has-video");
@@ -526,6 +999,36 @@ function detailFill(ev) {
     };
     video.src = videoPath;
     video.load();
+}
+
+function detailFill(ev) {
+    var el = ev.currentTarget;
+    fillDetailModal({
+        name: el.getAttribute('data-name'),
+        desc: el.getAttribute('data-desc'),
+        thumb: el.getAttribute('data-thumb'),
+        image: el.getAttribute('data-image'),
+        marquee: el.getAttribute('data-marquee'),
+        video: el.getAttribute('data-video'),
+        path: el.getAttribute('data-path'),
+        manual: el.getAttribute('data-manual'),
+        map: el.getAttribute('data-map'),
+        genre: el.getAttribute('data-genre'),
+        releasedate: el.getAttribute('data-releasedate'),
+        playcount: el.getAttribute('data-playcount'),
+        favorite: el.getAttribute('data-favorite'),
+        cheevos: el.getAttribute('data-cheevos')
+    });
+}
+
+function openGameDetail(game) {
+    fillDetailModal({
+        name: game.name, desc: game.desc, thumb: game.thumbnail, image: game.image,
+        marquee: game.marquee, video: game.video, path: game.path, manual: game.manual,
+        map: game.map, genre: game.genre, releasedate: game.releasedate,
+        playcount: game.playcount, favorite: game.favorite, cheevos: game.cheevosHash
+    });
+    $('#detailModal').modal('show');
 }
 
 function playDetailVideo(ev) {
@@ -549,7 +1052,6 @@ function playDetailVideo(ev) {
     }
 }
 
-// Virtual scrolling variables
 let currentGames = [];
 let visibleGames = [];
 const GAMES_PER_BATCH = 50;
@@ -565,7 +1067,6 @@ function showGames(arr) {
     visibleGames = [];
     loadingCancelled = false;
 
-    // Clear existing content and observer
     const gameList = document.getElementById("gameList");
     gameList.innerHTML = '';
 
@@ -574,13 +1075,10 @@ function showGames(arr) {
         gameScrollObserver = null;
     }
 
-    // Create the main container
     gameList.innerHTML = '<div class="games-grid" id="gameContainer"></div>';
 
-    // Show initial batch
     loadMoreGames();
 
-    // Set up intersection observer for infinite scroll only if there are more games to load
     if (currentGames.length > GAMES_PER_BATCH) {
         setupInfiniteScroll();
     }
@@ -596,11 +1094,10 @@ function loadMoreGames() {
     const endIndex = Math.min(startIndex + GAMES_PER_BATCH, currentGames.length);
     const batch = currentGames.slice(startIndex, endIndex);
 
-    // Create game cards
     const gameContainer = document.getElementById("gameContainer");
 
     batch.forEach(game => {
-        if (loadingCancelled) return; // Stop if cancelled
+        if (loadingCancelled) return;
         const cardElement = createGameCardElement(game);
         gameContainer.appendChild(cardElement);
         visibleGames.push(game);
@@ -609,7 +1106,6 @@ function loadMoreGames() {
     currentBatch++;
     isLoading = false;
 
-    // Hide loading indicator if all games are loaded
     const loadingIndicator = document.getElementById("loading-indicator");
     if (loadingIndicator && currentBatch * GAMES_PER_BATCH >= currentGames.length) {
         loadingIndicator.classList.add('hidden');
@@ -617,93 +1113,64 @@ function loadMoreGames() {
 }
 
 function createGameCardElement(game) {
-    const regex = /^\d\d\d\d/;
     const cardDiv = document.createElement('div');
     cardDiv.className = 'card card-game';
+    cardDiv.setAttribute('tabindex', '0');
+    cardDiv.setAttribute('role', 'button');
+    cardDiv.setAttribute('aria-label', game.name || 'Game');
+    cardDiv.setAttribute('data-toggle', 'modal');
+    cardDiv.setAttribute('data-target', '#detailModal');
+    cardDiv.setAttribute('data-desc', escapeHtml(game.desc || ''));
+    cardDiv.setAttribute('data-name', escapeHtml(game.name || ''));
+    cardDiv.setAttribute('data-thumb', game.thumbnail || '');
+    cardDiv.setAttribute('data-image', game.image || '');
+    cardDiv.setAttribute('data-marquee', game.marquee || '');
+    cardDiv.setAttribute('data-path', escapeHtml(game.path || ''));
+    cardDiv.setAttribute('data-genre', game.genre || '');
+    cardDiv.setAttribute('data-releasedate', game.releasedate || '');
+    cardDiv.setAttribute('data-playcount', game.playcount || '');
+    cardDiv.setAttribute('data-favorite', game.favorite || '');
+    cardDiv.setAttribute('data-cheevos', game.cheevosHash || '');
+    cardDiv.setAttribute('data-manual', game.manual || '');
+    cardDiv.setAttribute('data-map', game.map || '');
+    cardDiv.setAttribute('data-system', currentSystemName || '');
 
     let cardHtml = '';
+    var coverSrc = game.thumbnail || game.image || '';
 
-    // Image handling
-    if (game.thumbnail)
-        cardHtml += '<div class="card-img-container"><img class="card-img-cover" loading="lazy" src="' + game.thumbnail + '"></div>';
-    else if (game.image)
-        cardHtml += '<div class="card-img-container"><img class="card-img-cover" loading="lazy" src="' + game.image + '"></div>';
-
-    // Title/Marquee
-    cardHtml += '<div class="card-title-container">';
-    if (game.marquee)
-        cardHtml += '<img class="card-title-marquee" loading="lazy" src="' + game.marquee + '" title="' + escapeHtml(game.name) + '">';
-    else
-        cardHtml += '<div class="card-game-title" title="' + escapeHtml(game.name) + '">' + game.name + '</div>';
-    cardHtml += '</div>';
-
-    cardHtml += '<div class="card-body-custom text-center">';
-
-    // Genre
-    if (game.genre) {
-        cardHtml += '<span class="badge-netflix">' + game.genre + '</span>';
+    if (coverSrc) {
+        cardHtml += '<div class="card-img-container">' +
+            '<div class="card-img-backdrop" style="background-image:url(&quot;' + coverSrc + '&quot;)"></div>' +
+            '<img class="card-img-cover" loading="lazy" src="' + coverSrc + '"></div>';
     }
-
-    // Release date
-    if (game.releasedate && regex.test(game.releasedate)) {
-        cardHtml += '<span class="badge-netflix">' + game.releasedate.match(regex) + '</span>';
-    }
-
-    // Icons
-    if (game.cheevosHash && parseInt(game.cheevosHash) != 0) {
-        cardHtml += '<span class="badge-netflix"><i class="fa fa-trophy"></i></span>';
-    }
-    if (game.favorite == "true") {
-        cardHtml += '<span class="badge-netflix"><i class="fa fa-star"></i></span>';
-    }
-
-    // Play count
-    if (game.playcount && parseInt(game.playcount) > 0) {
-        cardHtml += '<span class="badge-netflix">' + game.playcount + 'x</span>';
-    } else {
-        cardHtml += '<span class="badge-netflix">Never played</span>';
-    }
-
-    cardHtml += '</div>'; // card-body-custom
-
-    cardHtml += '<div class="card-footer-custom">';
-    cardHtml += '<button type="button" class="btn btn-netflix" onClick="launchGame(\'' + escapeRom(game.path) + '\')" title="Play"><i class="fas fa-play"></i></button>';
-    if (game.desc) {
-        cardHtml += '<button type="button" class="btn btn-netflix-secondary" data-toggle="modal" data-target="#detailModal" data-desc="' + escapeHtml(game.desc) +
-            '" data-name="' + escapeHtml(game.name) + '" data-thumb="' + (game.thumbnail || '') +
-            '" data-image="' + (game.image || '') + '" data-path="' + escapeHtml(game.path || '') +
-            '" data-system="' + escapeHtml(currentSystemName || '') + '" onClick="detailFill(event)" title="Info"><i class="fas fa-info-circle"></i></button>';
-    }
-    if (game.manual) {
-        cardHtml += '<button type="button" class="btn btn-netflix-secondary" onClick="window.open(\'' + game.manual + '\', \'_blank\', \'noopener,noreferrer\')" title="Manual"><i class="fas fa-book"></i></button>';
-    }
-    if (game.map) {
-        cardHtml += '<button type="button" class="btn btn-netflix-secondary" onClick="window.open(\'' + game.map + '\', \'_blank\', \'noopener,noreferrer\')" title="Map"><i class="fas fa-map"></i></button>';
-    }
-    cardHtml += '</div>'; // card-footer-custom
 
     cardDiv.innerHTML = cardHtml;
+
+    cardDiv.addEventListener('click', detailFill);
+    cardDiv.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            detailFill(ev);
+        }
+    });
+
     return cardDiv;
 }
 
 function setupInfiniteScroll() {
-    // Create loading indicator - place it after the game container
     const loadingDiv = document.createElement('div');
     loadingDiv.id = 'loading-indicator';
     loadingDiv.className = 'w-100 text-center p-3';
     loadingDiv.innerHTML = '<div class="spinner-border text-light" role="status"><span class="sr-only">Loading more games...</span></div><p class="text-light mt-2">Loading more games...</p>';
 
-    // Insert the loading indicator after the game container
     const gameContainer = document.getElementById("gameContainer");
     const gameList = document.getElementById("gameList");
     const rowContainer = gameContainer.parentElement;
     rowContainer.appendChild(loadingDiv);
 
-    // Set up intersection observer
     gameScrollObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && !isLoading && !loadingCancelled && currentBatch * GAMES_PER_BATCH < currentGames.length) {
-                // Add a small delay to prevent rapid firing
                 setTimeout(() => {
                     if (!isLoading && !loadingCancelled && currentBatch * GAMES_PER_BATCH < currentGames.length) {
                         loadMoreGames();
@@ -712,8 +1179,8 @@ function setupInfiniteScroll() {
             }
         });
     }, {
-        root: null, // Use viewport as root
-        rootMargin: '100px', // Start loading when 100px before the element comes into view
+        root: null,
+        rootMargin: '100px',
         threshold: 0.1
     });
 
@@ -732,23 +1199,20 @@ function getOrder(prop) {
 }
 
 function loadGames(name) {
-    // Cancel any ongoing loading
+    showGamesView();
     loadingCancelled = true;
     currentSystemName = name;
 
-    // Disconnect existing observer immediately
     if (gameScrollObserver) {
         gameScrollObserver.disconnect();
         gameScrollObserver = null;
     }
 
-    // Show loading state
     document.getElementById("gameList").innerHTML = '<div class="text-center p-5"><div class="spinner-border text-light" role="status"><span class="sr-only">Loading...</span></div><p class="mt-3">Loading games...</p></div>';
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            // Only process if this is still the current system
             if (currentSystemName === name) {
                 var myArr = JSON.parse(this.responseText);
                 myArr.sort(getOrder("name"));
@@ -774,7 +1238,6 @@ function showSystems(arr) {
 
     var out = '';
     var i;
-    // Filter visible systems
     arr = arr.filter(function(system) {
         return system.visible == "true";
     });
@@ -787,19 +1250,309 @@ function showSystems(arr) {
                 out += '<div class="carousel-item">';
             out += '<div class="row no-gutters">';
         }
+
+        var safeName = escapeHtml(arr[i].name);
         if (arr[i].logo) {
-            out += '<div class="' + sz_sys + ' sys-btn"><a onclick="javascript:loadGames(\'' + arr[i].name + '\')" href="#"><button type="button" class="btn btn-dark"><img src="' + arr[i].logo + '"></button></a></div>';
+            out += '<div class="' + sz_sys + ' sys-btn"><a onclick="loadGames(\'' + escapeRom(arr[i].name) + '\')" href="javascript:void(0)"><button type="button" class="btn btn-dark"><img src="' + arr[i].logo + '" alt="' + safeName + '"></button></a></div>';
         } else {
-            out += '<div class="' + sz_sys + ' sys-btn"><a onclick="javascript:loadGames(\'' + arr[i].name + '\')" href="#"><button type="button" class="btn btn-dark">' + arr[i].fullname + '</button></a></div>';
+            out += '<div class="' + sz_sys + ' sys-btn"><a onclick="loadGames(\'' + escapeRom(arr[i].name) + '\')" href="javascript:void(0)"><button type="button" class="btn btn-dark">' + escapeHtml(arr[i].fullname || arr[i].name) + '</button></a></div>';
         }
+
         if (i % nb_sys == (nb_sys - 1) || i == arr.length - 1)
-            out += '</div></div>'; // row carousel-item
+            out += '</div></div>';
     }
 
     var carouselInner = document.querySelector('#sysCarousel .carousel-inner');
-    if (carouselInner) {
-        carouselInner.innerHTML = out;
+    if (carouselInner) carouselInner.innerHTML = out;
+}
+
+function showGamesView() {
+    document.body.classList.remove('home-mode');
+    document.body.classList.add('games-mode');
+    var home = document.getElementById('homeScreen');
+    var games = document.getElementById('gameList');
+    var systems = document.getElementById('systemList');
+    if (home) home.style.display = 'none';
+    if (games) games.style.display = 'block';
+    if (systems) systems.classList.add('show');
+}
+
+function showHomeView() {
+    document.body.classList.remove('games-mode');
+    document.body.classList.add('home-mode');
+    var home = document.getElementById('homeScreen');
+    var games = document.getElementById('gameList');
+    var systems = document.getElementById('systemList');
+    if (home) home.style.display = 'block';
+    if (games) games.style.display = 'none';
+    if (systems) systems.classList.remove('show');
+    currentSystemName = null;
+}
+
+function createHomeGameCard(game, systemName) {
+    var card = document.createElement('div');
+    card.className = 'home-game';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', game.name || 'Game');
+    card.setAttribute('data-toggle', 'modal');
+    card.setAttribute('data-target', '#detailModal');
+    card.setAttribute('data-desc', escapeHtml(game.desc || ''));
+    card.setAttribute('data-name', escapeHtml(game.name || ''));
+    card.setAttribute('data-thumb', game.thumbnail || '');
+    card.setAttribute('data-image', game.image || '');
+    card.setAttribute('data-marquee', game.marquee || '');
+    card.setAttribute('data-path', escapeHtml(game.path || ''));
+    card.setAttribute('data-genre', game.genre || '');
+    card.setAttribute('data-releasedate', game.releasedate || '');
+    card.setAttribute('data-playcount', game.playcount || '');
+    card.setAttribute('data-favorite', game.favorite || '');
+    card.setAttribute('data-cheevos', game.cheevosHash || '');
+    card.setAttribute('data-manual', game.manual || '');
+    card.setAttribute('data-map', game.map || '');
+    card.setAttribute('data-system', systemName || '');
+
+    var image = game.thumbnail || game.image || '';
+    var html = '<div class="home-game-media">';
+    if (image) {
+        html += '<img loading="lazy" src="' + image + '" alt="' + escapeHtml(game.name || '') + '">';
+    } else {
+        html += '<div class="home-game-no-image">' + escapeHtml(game.name || 'Unknown game') + '</div>';
     }
+    html += '</div>';
+    card.innerHTML = html;
+
+    card.addEventListener('click', detailFill);
+    card.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            detailFill(ev);
+        }
+    });
+
+    return card;
+}
+
+function createHomeSystemRow(system, games) {
+    var row = document.createElement('section');
+    row.className = 'system-row';
+
+    var header = document.createElement('div');
+    header.className = 'system-row-header';
+
+    var title = document.createElement('div');
+    title.className = 'system-row-title';
+    title.title = 'Open ' + (system.fullname || system.name);
+    title.onclick = function() { loadGames(system.name); };
+
+    if (system.logo) {
+        var logo = document.createElement('img');
+        logo.className = 'system-row-logo';
+        logo.src = system.logo;
+        logo.alt = system.fullname || system.name;
+        title.appendChild(logo);
+    }
+
+    var name = document.createElement('span');
+    name.className = 'system-row-name';
+    name.textContent = system.fullname || system.name;
+    title.appendChild(name);
+
+    var count = document.createElement('span');
+    count.className = 'system-row-count';
+    count.textContent = games.length + ' games';
+    title.appendChild(count);
+
+    var seeAll = document.createElement('button');
+    seeAll.className = 'home-see-all';
+    seeAll.type = 'button';
+    seeAll.textContent = 'See all ›';
+    seeAll.onclick = function() { loadGames(system.name); };
+
+    header.appendChild(title);
+    header.appendChild(seeAll);
+    row.appendChild(header);
+
+    var scroller = document.createElement('div');
+    scroller.className = 'system-row-scroll';
+
+    games.slice(0, 10).forEach(function(game) {
+        if (game.hidden !== "true") scroller.appendChild(createHomeGameCard(game, system.name));
+    });
+
+    row.appendChild(scroller);
+    return row;
+}
+
+var ALL_GAMES = [];
+
+async function loadHome(systems) {
+    var home = document.getElementById('homeScreen');
+    if (!home) return;
+
+    home.innerHTML =
+        '<div class="home-hero" id="homeHero" role="button" tabindex="0" aria-label="Open game">' +
+        '<div class="home-hero-slides" id="heroSlides"></div>' +
+        '<div class="home-hero-overlay"></div>' +
+        '<div class="home-hero-content" id="heroContent"></div>' +
+        '</div>' +
+'<br>' +
+        '<div id="homeRows"></div>';
+
+    var rows = document.getElementById('homeRows');
+    var visibleSystems = systems.filter(function(s) { return s.visible == "true"; });
+
+    var results = await Promise.all(visibleSystems.map(async function(system) {
+        try {
+            var response = await fetch('/systems/' + system.name + '/games');
+            if (!response.ok) return {system: system, games: []};
+            var games = await response.json();
+            games = games.filter(function(game) { return game.hidden !== "true"; });
+            games.forEach(function(g) { g.systemName = system.name; g.systemFullname = system.fullname || system.name; });
+            games.sort(getOrder("name"));
+            return {system: system, games: games};
+        } catch (e) {
+            console.warn('Could not load games for ' + system.name, e);
+            return {system: system, games: []};
+        }
+    }));
+
+    ALL_GAMES = [];
+    results.forEach(function(result) { ALL_GAMES = ALL_GAMES.concat(result.games); });
+
+    results.forEach(function(result) {
+        if (result.games.length > 0) {
+            rows.appendChild(createHomeSystemRow(result.system, result.games));
+        }
+    });
+
+    startHeroSlideshow(ALL_GAMES);
+}
+
+var heroSlideInterval = null;
+var heroSlideGames = [];
+var heroSlideIndex = 0;
+var heroSwiped = false;
+
+function startHeroSlideshow(games) {
+    var container = document.getElementById('heroSlides');
+    var hero = document.getElementById('homeHero');
+    if (!container || !hero) return;
+
+    var pool = games.filter(function(g) { return g.image || g.thumbnail; });
+    if (pool.length === 0) return;
+
+    heroSlideGames = pool.slice().sort(function() { return Math.random() - 0.5; }).slice(0, 8);
+
+    container.innerHTML = heroSlideGames.map(function(g) {
+        var src = g.image || g.thumbnail;
+        return '<div class="home-hero-slide" style="background-image:url(&quot;' + src + '&quot;)"></div>';
+    }).join('');
+
+    heroSlideIndex = 0;
+    container.style.transition = 'none';
+    container.style.transform = 'translateX(0%)';
+    updateHeroContent();
+    // transition weer aanzetten na de eerste, ongeanimeerde render
+    requestAnimationFrame(function() { container.style.transition = ''; });
+
+    // Klikken/Enter op de hero opent de infopopup - maar niet als het net een swipe was.
+    hero.onclick = function() {
+        if (heroSwiped) { heroSwiped = false; return; }
+        var game = heroSlideGames[heroSlideIndex];
+        if (game) openGameDetail(game);
+    };
+    hero.onkeydown = function(ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            hero.onclick();
+        } else if (ev.key === 'ArrowRight') {
+            goToHeroSlide(heroSlideIndex + 1);
+            restartHeroInterval();
+        } else if (ev.key === 'ArrowLeft') {
+            goToHeroSlide(heroSlideIndex - 1);
+            restartHeroInterval();
+        }
+    };
+
+    setupHeroSwipe(hero, container);
+    restartHeroInterval();
+}
+
+function goToHeroSlide(newIndex) {
+    var count = heroSlideGames.length;
+    if (count === 0) return;
+    heroSlideIndex = ((newIndex % count) + count) % count;
+    var container = document.getElementById('heroSlides');
+    if (container) container.style.transform = 'translateX(-' + (heroSlideIndex * 100) + '%)';
+    updateHeroContent();
+}
+
+function restartHeroInterval() {
+    if (heroSlideInterval) clearInterval(heroSlideInterval);
+    if (heroSlideGames.length <= 1) return;
+    heroSlideInterval = setInterval(function() {
+        goToHeroSlide(heroSlideIndex + 1);
+    }, 5000);
+}
+
+// Swipe met je vinger door de slideshow - volgt live mee met je vinger,
+// en snapt daarna naar de dichtstbijzijnde slide.
+function setupHeroSwipe(hero, container) {
+    var startX = 0, currentX = 0, dragging = false, width = 1;
+
+    hero.addEventListener('touchstart', function(ev) {
+        if (ev.touches.length !== 1) return;
+        dragging = true;
+        heroSwiped = false;
+        startX = currentX = ev.touches[0].clientX;
+        width = hero.getBoundingClientRect().width || 1;
+        if (heroSlideInterval) clearInterval(heroSlideInterval);
+        container.style.transition = 'none';
+    }, { passive: true });
+
+    hero.addEventListener('touchmove', function(ev) {
+        if (!dragging) return;
+        currentX = ev.touches[0].clientX;
+        var dx = currentX - startX;
+        if (Math.abs(dx) > 8) heroSwiped = true;
+        var basePercent = -(heroSlideIndex * 100);
+        var dragPercent = (dx / width) * 100;
+        container.style.transform = 'translateX(' + (basePercent + dragPercent) + '%)';
+    }, { passive: true });
+
+    hero.addEventListener('touchend', function() {
+        if (!dragging) return;
+        dragging = false;
+        container.style.transition = '';
+        var dx = currentX - startX;
+        if (Math.abs(dx) > width * 0.15 || Math.abs(dx) > 60) {
+            goToHeroSlide(heroSlideIndex + (dx < 0 ? 1 : -1));
+        } else {
+            goToHeroSlide(heroSlideIndex);
+        }
+        restartHeroInterval();
+        setTimeout(function() { heroSwiped = false; }, 80);
+    });
+}
+
+// Toont de marquee (of anders de titel) van het spel dat nu in de diashow te zien is.
+function updateHeroContent() {
+    var content = document.getElementById('heroContent');
+    if (!content) return;
+    var game = heroSlideGames[heroSlideIndex];
+    if (!game) { content.innerHTML = ''; return; }
+    if (game.marquee) {
+        content.innerHTML = '<img class="home-hero-marquee" src="' + game.marquee + '" alt="' + escapeHtml(game.name || '') + '">';
+    } else {
+        content.innerHTML = '<div class="home-hero-title">' + escapeHtml(game.name || '') + '</div>';
+    }
+}
+
+function goHome() {
+    showHomeView();
+    var homeButton = document.getElementById('homeButton');
+    if (homeButton) homeButton.classList.add('active');
 }
 
 function describe(d) {
@@ -847,15 +1600,29 @@ function describe(d) {
 
 var PREVDATA = null;
 
+// Batocera levert sommige systeemnamen (o.a. de automatische 'favorites' en
+// 'lastplayed'-verzamelingen) met een kleine letter aan - hier normaliseren
+// we dat naar een hoofdletter, zodat het overal netjes oogt.
+function capitalizeFirst(str) {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 $(document).ready(function() {
+    document.body.classList.add('home-mode');
     fetch('/systems')
     .then(response => response.json())
     .then(data => {
+        data.forEach(function(system) {
+            if (system.fullname) system.fullname = capitalizeFirst(system.fullname);
+            else if (system.name) system.fullname = capitalizeFirst(system.name);
+        });
         showSystems(data);
+        showHomeView();
+        loadHome(data);
     });
 
     var latestOutput = document.getElementById("jumbo");
-    // Construct the WebSocket URL based on the current location of the web page
     var wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     var wsHost = location.host;
     wsHost = wsHost.split(':')[0]+":8080"
@@ -892,13 +1659,13 @@ $(document).on('hidden.bs.modal', '#detailModal', function() {
 <div class="modal fade" id="killModal" tabindex="-1" role="dialog" aria-labelledby="KillModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered" role="document">
 <div class="modal-content">
-<div class="modal-header">
+<div class="modal-header" style="border-bottom:none;">
 <h5 class="modal-title" id="KillModalLabel"><i class="fas fa-exclamation-triangle text-danger mr-2"></i>Are you sure?</h5>
 </div>
 <div class="modal-body text-secondary">
 Confirm you want to kill the running emulator and game.
 </div>
-<div class="modal-footer">
+<div class="modal-footer" style="border-top:none;">
 <button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button> <button type="button" class="btn btn-netflix" data-dismiss="modal" onclick="emuKill()">Kill it!</button>
 </div>
 </div>
@@ -908,12 +1675,10 @@ Confirm you want to kill the running emulator and game.
 <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 <div class="modal-content">
-<div class="modal-header">
+<div class="modal-header" style="border-bottom:none;">
 <h5 class="modal-title font-weight-bold" id="detailModalLabel"></h5>
 </div>
-<div class="modal-body">
-<div class="row">
-<div class="col-md-5 mb-3 mb-md-0 text-center">
+<div class="modal-body" style="padding-top:0;">
 <div class="detail-media" id="detailModalMedia">
 <img class="img-fluid rounded shadow" loading="lazy" src="" id="detailModalImg">
 <div class="detail-video-container" id="detailVideoContainer">
@@ -923,14 +1688,20 @@ Your browser does not support HTML5 video.
 </div>
 <button type="button" class="detail-video-play" aria-label="Play video" onclick="playDetailVideo(event)"><i class="fas fa-play"></i></button>
 </div>
+<div class="detail-badges" id="detailModalBadges"></div>
+<div class="detail-marquee-wrap" id="detailMarqueeWrap" style="display:none;">
+<img class="detail-marquee-img" loading="lazy" src="" id="detailModalMarquee" alt="">
 </div>
-<div class="col-md-7">
-<p class="text-light" id="detailModalBody" style="line-height:1.6; font-size:0.9rem;"></p>
+<p class="text-light detail-desc-text" id="detailModalBody" style="line-height:1.6; font-size:0.9rem;"></p>
 </div>
-</div>
-</div>
-<div class="modal-footer">
+<div class="modal-footer" style="border-top:none;">
+<div class="detail-footer-actions">
+<div class="detail-footer-extras" id="detailModalExtras"></div>
+<div class="detail-footer-main">
 <button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Close</button>
+<button type="button" class="btn btn-netflix" id="detailModalPlay"><i class="fas fa-play mr-1"></i><span class="ml-1">Play</span></button>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -939,18 +1710,19 @@ Your browser does not support HTML5 video.
 <!-- navbars -->
 <nav class="navbar fixed-top">
 <div class="container-fluid p-0 d-flex flex-column">
-<div class="w-100 d-flex align-items-center justify-content-between mb-2">
-<span onclick="location.reload();" class="brand-title" role="button">
-BATOCERA
-</span>
+<div class="w-100 d-flex align-items-center justify-content-between mb-0">
+<span onclick="goHome()" class="brand-title" role="button">BATOCERA</span>
 <div class="d-flex align-items-center">
+<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" onclick="toggleSearch()" id="searchToggle" title="Search">
+<i class="fas fa-search"></i>
+</button>
 <button type="button" class="btn btn-netflix-secondary btn-sm mr-1" data-toggle="collapse" data-target="#systemList" aria-expanded="true" aria-controls="systemList" id="showSystems" title="Systems">
 <i class="fas fa-th"></i><span class="btn-text ml-1">Systems</span>
 </button>
 <button type="button" class="btn btn-netflix-secondary btn-sm mr-1" data-toggle="collapse" data-target="#jumbo-container" id="showNotifs" title="Current Game">
 <i class="fas fa-play-circle"></i><span class="btn-text ml-1">Current</span>
 </button>
-<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" onclick="reloadGamelists()" title="Reload">
+<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" onclick="reloadGamelists(); setTimeout(() => location.reload(), 500);" title="Reload">
 <i class="fas fa-sync-alt"></i>
 </button>
 <button type="button" class="btn btn-netflix btn-sm" data-toggle="modal" data-target="#killModal" title="Kill">
@@ -959,11 +1731,99 @@ BATOCERA
 </div>
 </div>
 
-<div class="collapse show jumbo-container" id="jumbo-container">
+<div id="searchBar" class="collapse search-bar mt-2">
+<div class="search-input-wrap">
+<i class="fas fa-search"></i>
+<input type="text" id="searchInput" placeholder="Search for a game…" autocomplete="off" oninput="onSearchInput(this.value)">
+<button type="button" class="search-dice" onclick="playRandomGame()" title="Surprise me" aria-label="Random game"><i class="fas fa-dice"></i></button>
+<button type="button" class="search-close" onclick="toggleSearch()" aria-label="Close"><i class="fas fa-times"></i></button>
+</div>
+<div id="searchResults" class="search-results"></div>
+</div>
+
+<div class="collapse show jumbo-container mt-2" id="jumbo-container">
 <div class="jumbo" id="jumbo"></div>
 </div>
 </div>
 </nav>
+<script>
+function toggleSearch() {
+    var bar = $('#searchBar');
+    if (!bar.length) return;
+    var willShow = !bar.hasClass('show');
+    bar.collapse('toggle');
+    if (willShow) {
+        var input = document.getElementById('searchInput');
+        if (input) { input.value = ''; setTimeout(function() { input.focus(); }, 150); }
+        document.getElementById('searchResults').innerHTML = '';
+    }
+}
+
+function playRandomGame() {
+    if (!ALL_GAMES || ALL_GAMES.length === 0) return;
+    var game = ALL_GAMES[Math.floor(Math.random() * ALL_GAMES.length)];
+    toggleSearch();
+    openGameDetail(game);
+}
+
+function onSearchInput(value) {
+    var resultsEl = document.getElementById('searchResults');
+    if (!resultsEl) return;
+    var q = (value || '').trim().toLowerCase();
+    if (q.length < 2) { resultsEl.innerHTML = ''; return; }
+
+    var matches = (typeof ALL_GAMES !== 'undefined' ? ALL_GAMES : [])
+        .filter(function(g) { return g.name && g.name.toLowerCase().indexOf(q) !== -1; })
+        .slice(0, 30);
+
+    if (matches.length === 0) {
+        resultsEl.innerHTML = '<div class="search-empty">No games found for "' + escapeHtml(value) + '".</div>';
+        return;
+    }
+
+    resultsEl.innerHTML = matches.map(function(g) {
+        var img = g.thumbnail || g.image || '';
+        return '<div class="search-result-item" data-idx="' + ALL_GAMES.indexOf(g) + '">' +
+            (img ? '<img loading="lazy" src="' + img + '">' : '<div class="search-result-noimg"></div>') +
+            '<div class="search-result-info"><div class="search-result-name">' + escapeHtml(g.name) + '</div>' +
+            '<div class="search-result-system">' + escapeHtml(g.systemFullname || g.systemName || '') + '</div></div>' +
+            '</div>';
+    }).join('');
+
+    resultsEl.querySelectorAll('.search-result-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var idx = parseInt(el.getAttribute('data-idx'));
+            var game = ALL_GAMES[idx];
+            if (game) {
+                toggleSearch();
+                openGameDetail(game);
+            }
+        });
+    });
+}
+</script>
+<script>
+(function() {
+    function syncNavOffset() {
+        var nav = document.querySelector('nav.navbar.fixed-top');
+        if (!nav) return;
+        var bottom = nav.getBoundingClientRect().bottom;
+        document.body.style.paddingTop = (Math.ceil(bottom) + 4) + 'px';
+    }
+    document.addEventListener('DOMContentLoaded', syncNavOffset);
+    window.addEventListener('resize', syncNavOffset);
+    window.addEventListener('orientationchange', syncNavOffset);
+    if (window.ResizeObserver) {
+        document.addEventListener('DOMContentLoaded', function() {
+            var nav = document.querySelector('nav.navbar.fixed-top');
+            if (nav) new ResizeObserver(syncNavOffset).observe(nav);
+        });
+    }
+    syncNavOffset();
+})();
+</script>
+
+<div id="homeScreen"></div>
 
 <div class="main-content">
 <div id="gameList"></div>
@@ -988,6 +1848,39 @@ BATOCERA
 
 </div>
 </div>
+
+<script>
+// Swipe-ondersteuning voor de consolebalk onderin (naast de bestaande pijltjes-knoppen).
+(function() {
+    var carouselEl = document.getElementById('sysCarousel');
+    if (!carouselEl) return;
+
+    var startX = 0, startY = 0, tracking = false;
+
+    carouselEl.addEventListener('touchstart', function(ev) {
+        var t = ev.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        tracking = true;
+    }, { passive: true });
+
+    carouselEl.addEventListener('touchend', function(ev) {
+        if (!tracking) return;
+        tracking = false;
+        var t = ev.changedTouches[0];
+        var dx = t.clientX - startX;
+        var dy = t.clientY - startY;
+        // Alleen duidelijk horizontale swipes tellen, verticaal scrollen blijft gewoon werken.
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            if (dx < 0) {
+                $('#sysCarousel').carousel('next');
+            } else {
+                $('#sysCarousel').carousel('prev');
+            }
+        }
+    }, { passive: true });
+})();
+</script>
 
 </body>
 </html>
