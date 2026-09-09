@@ -26,6 +26,17 @@ Give your Batocera setup a fresh, modern look with this **Batocera Web Services 
 
 ---
 
+## What's New in 3.0!
+
+- Add to iOS home screen with custom icon and full screen support
+- Dice button for a random game, right in the search bar
+- Slideshow with random games on the home screen, swipeable and clickable to launch that game
+- Bottom console menu is now swipeable, not just tap-the-arrows
+- Refresh button now refreshes the page and the game list — a full reset
+- Bug fixes
+
+---
+
 ## Game Video Previews
 
 If a game has a video available, a **play button** appears directly on the game artwork.
