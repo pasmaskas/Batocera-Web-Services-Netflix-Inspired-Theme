@@ -76,7 +76,13 @@ logo.png
 → /usr/share/emulationstation/resources/services/logo-tri.png
 ```
 
-Make sure **both files are replaced**.
+
+```text
+logo.png
+→ /usr/share/emulationstation/resources/services/logo-ios.png
+```
+
+Make sure **all files are replaced**.
 
 ## 3. Save the changes
 
