@@ -67,19 +67,9 @@ Before installing, it is recommended to make a backup of the original Batocera f
 Copy the files from this theme/repository to your Batocera system:
 
 ```text
-index.html
-→ /usr/share/emulationstation/resources/services/index.html
-```
-
-```text
-logo.png
-→ /usr/share/emulationstation/resources/services/logo-tri.png
-```
-
-
-```text
-logo.png
-→ /usr/share/emulationstation/resources/services/logo-ios.png
+/usr/share/emulationstation/resources/services/index.html
+/usr/share/emulationstation/resources/services/logo-tri.png
+/usr/share/emulationstation/resources/services/logo-ios.png
 ```
 
 Make sure **all files are replaced**.
