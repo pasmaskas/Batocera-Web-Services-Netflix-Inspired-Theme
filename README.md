@@ -43,6 +43,8 @@ Give your Batocera setup a fresh, modern look with this **Batocera Web Services 
 - **`batocerapower.py` + `batocerapower`** - an optional companion service that adds abilities Batocera's built-in web server doesn't have (reboot, shutdown, restarting EmulationStation, toggling favorites). `index.html` detects on its own whether this service is installed - if it isn't, those specific buttons just stay hidden and everything else works normally.
 - **`kodi.sh`** - a one-line launcher script that makes the Kodi button work, by using Batocera's existing `ports` system rather than the companion service. Optional, only needed if you want the Kodi button.
 
+---
+
 ## Game Video Previews
 
 If a game has a video available, a **play button** appears directly on the game artwork.
