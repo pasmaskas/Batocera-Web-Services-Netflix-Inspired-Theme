@@ -37,6 +37,8 @@ Give your Batocera setup a fresh, modern look with this **Batocera Web Services 
 
 ---
 
+<img width="1920" height="1080" alt="New Project" src="https://github.com/user-attachments/assets/9b857c80-a2c7-431a-af0d-b45b28d37530" />
+
 ## What's New in 4.0!
 
 - **Favorites** - a star on the cover of any favorited game, and a toggle in each game's info popup (needs the companion service, see below)
