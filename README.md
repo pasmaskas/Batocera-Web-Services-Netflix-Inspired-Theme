@@ -122,8 +122,6 @@ Once opened, you should see the new **Batocera Web Services — Netflix-Inspired
 
 ---
 
----
-
 ## Installing the companion service (optional, for Restart/Shutdown/Restart ES/Favorites)
 
 Only do this if you want Restart/Shutdown/Restart EmulationStation/
