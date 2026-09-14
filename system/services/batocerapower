@@ -1,0 +1,32 @@
+#!/bin/bash
+# Batocera custom service: batocerapower
+# Starts/stops batocerapower.py, which lets the web UI trigger a safe
+# reboot/shutdown. See INSTALL.md for setup instructions.
+
+DAEMON="/userdata/system/batocerapower.py"
+PIDFILE="/var/run/batocerapower.pid"
+
+case "$1" in
+    start)
+        python3 "$DAEMON" &
+        echo $! > "$PIDFILE"
+        ;;
+    stop)
+        if [ -f "$PIDFILE" ]; then
+            kill "$(cat "$PIDFILE")" 2>/dev/null
+            rm -f "$PIDFILE"
+        fi
+        ;;
+    status)
+        if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+            echo "running"
+        else
+            echo "stopped"
+        fi
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status}"
+        exit 1
+        ;;
+esac
+exit 0

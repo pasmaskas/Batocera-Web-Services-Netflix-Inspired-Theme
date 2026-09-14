@@ -184,7 +184,7 @@ body {
     height: 5px;
 }
 
-/* --- HOMESCREEN AANPASSINGEN --- */
+/* --- HOMESCREEN CUSTOMIZATIONS --- */
 .home-game {
     flex: 0 0 auto;
     background: var(--netflix-card-bg);
@@ -355,6 +355,72 @@ body.games-mode {
     color: #FFF;
 }
 
+/* Close (X) button, top-right of a modal header */
+.close-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 1.1rem;
+    padding: 4px 6px;
+    line-height: 1;
+}
+.close-btn:hover {
+    color: #fff;
+}
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Options menu (Kill Game / Refresh) */
+.power-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.power-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: #fff;
+    text-align: left;
+    transition: background-color 0.15s;
+}
+.power-menu-item:hover, .power-menu-item:focus-visible {
+    background: rgba(255,255,255,0.14);
+}
+.power-menu-item i {
+    font-size: 1.3rem;
+    width: 26px;
+    text-align: center;
+    color: var(--netflix-light-gray);
+}
+.power-menu-item-danger i { color: var(--netflix-red); }
+.power-menu-title { font-weight: 700; font-size: 0.95rem; }
+.power-menu-sub { font-size: 0.78rem; color: var(--netflix-light-gray); }
+
+/* Favorite star indicator, top-right on the cards themselves (home + console grid) */
+.card-favorite-badge, .home-favorite-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.8);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .8rem;
+    z-index: 2;
+}
+
 .jumbo-container { width: 100%; }
 
 .jumbo {
@@ -399,6 +465,7 @@ body.games-mode {
     align-items: center;
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
+	box-shadow: 0 4px 15px rgba(0,0,0,0.6);
     border-radius: 6px;
     padding: 10px 12px;
 }
@@ -473,7 +540,7 @@ body.games-mode {
     padding: 10px 4px;
 }
 
-/* --- CONSOLE / CATALOGUS GRID AANPASSINGEN --- */
+/* --- CONSOLE / CATALOG GRID ADJUSTMENTS --- */
 .games-grid {
     display: flex;
     flex-wrap: wrap;
@@ -750,6 +817,30 @@ body.games-mode {
     transform: translate(-50%, -50%) scale(1.08);
     background: #F40612;
 }
+
+/* Stacked modals: the favorite confirm popup opens on top of the game
+   info popup (which stays open behind it), so it needs a higher layer
+   than Bootstrap gives it by default. */
+#favoriteConfirmModal {
+    z-index: 1070;
+}
+.modal-backdrop.modal-stack-adjusted {
+    z-index: 1065;
+}
+
+/* Favorite star badge among the info badges (genre/year/etc) */
+.badge-favorite-toggle {
+    cursor: pointer;
+    color: #fff;
+    transition: color .15s, transform .1s;
+}
+.badge-favorite-toggle:hover, .badge-favorite-toggle:focus-visible {
+    transform: scale(1.1);
+}
+.badge-favorite-toggle .fas.fa-star {
+    color: #fff;
+}
+
 .detail-video-container {
     position: absolute;
     inset: 0;
@@ -798,7 +889,7 @@ body.games-mode {
     margin-top: 12px;
 }
 .detail-badges .badge-netflix {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     padding: 4px 9px;
 }
 .detail-desc-text {
@@ -883,6 +974,72 @@ function emuKill() {
     fetch('/emukill');
 }
 
+// Calls the separate 'batocerapower' companion service (port 1235) - see INSTALL.md.
+// That service needs to be installed on the Batocera itself, since the
+// built-in Batocera web server (port 1234) can't trigger a reboot/shutdown
+// or restart EmulationStation on its own.
+function batoceraPowerHost() {
+    return location.hostname + ':1235';
+}
+
+function batoceraRestart() {
+    fetch('http://' + batoceraPowerHost() + '/reboot').catch(function() {});
+}
+
+function batoceraShutdown() {
+    fetch('http://' + batoceraPowerHost() + '/shutdown').catch(function() {});
+}
+
+function batoceraRestartES() {
+    fetch('http://' + batoceraPowerHost() + '/restart-es').catch(function() {});
+}
+
+// Path to the 'kodi.sh' entry found in the ports system (if any) - see
+// detectKodiLauncher(). Launched the normal way, through Batocera's own
+// /launch endpoint, exactly like any other game - no companion service
+// needed, and no display/session workarounds required either, since
+// EmulationStation's own launch pipeline already has a proper session.
+var kodiLaunchPath = null;
+
+function batoceraStartKodi() {
+    if (!kodiLaunchPath) return;
+    launchGame(kodiLaunchPath);
+}
+
+function updateKodiButtonVisibility() {
+    document.querySelectorAll('.kodi-only-item').forEach(function(el) {
+        el.style.display = kodiLaunchPath ? '' : 'none';
+    });
+}
+
+// Only show Restart/Shutdown/Restart ES when the batocerapower service is
+// actually reachable, so people who haven't installed it never see those
+// buttons. Kodi is handled separately (see updateKodiButtonVisibility) since
+// it doesn't need the companion service at all.
+var batoceraPowerReachable = false;
+
+function checkBatoceraPowerAvailable() {
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function() { controller.abort(); }, 1200);
+
+    fetch('http://' + batoceraPowerHost() + '/ping', { signal: controller.signal })
+        .then(function(r) {
+            batoceraPowerReachable = r.ok;
+            setPowerButtonsVisible(r.ok);
+        })
+        .catch(function() {
+            batoceraPowerReachable = false;
+            setPowerButtonsVisible(false);
+        })
+        .finally(function() { clearTimeout(timeoutId); });
+}
+
+function setPowerButtonsVisible(visible) {
+    document.querySelectorAll('.power-only-item').forEach(function(el) {
+        el.style.display = visible ? '' : 'none';
+    });
+}
+
 function launchGame(game) {
     fetch('/launch', {
         method: 'POST',
@@ -932,6 +1089,10 @@ function fillDetailModal(data) {
     var playcount = data.playcount || "";
     var favorite = data.favorite || "";
     var cheevos = data.cheevos || "";
+    var system = data.system || "";
+
+    // Remembered for the favorite star button in this popup.
+    currentModalGame = { system: system, path: path, favorite: favorite === "true" };
 
     var pic = document.getElementById("detailModalImg");
     var media = document.getElementById("detailModalMedia");
@@ -962,7 +1123,11 @@ function fillDetailModal(data) {
     if (genre) badgesHtml += '<span class="badge-netflix">' + genre + '</span>';
     if (releasedate && yearRegex.test(releasedate)) badgesHtml += '<span class="badge-netflix">' + releasedate.match(yearRegex) + '</span>';
     if (cheevos && parseInt(cheevos) != 0) badgesHtml += '<span class="badge-netflix"><i class="fa fa-trophy"></i></span>';
-    if (favorite == "true") badgesHtml += '<span class="badge-netflix"><i class="fa fa-star"></i></span>';
+    badgesHtml += '<span class="badge-netflix badge-favorite-toggle power-only-item" id="detailFavoriteBadge" style="display:' + (batoceraPowerReachable ? '' : 'none') + ';" role="button" tabindex="0" aria-label="' +
+        (currentModalGame.favorite ? "Remove from favorites" : "Add to favorites") +
+        '" title="' + (currentModalGame.favorite ? "Remove from favorites" : "Add to favorites") +
+        '" onclick="openFavoriteConfirm()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openFavoriteConfirm();}">' +
+        '<i class="' + (currentModalGame.favorite ? "fas" : "far") + ' fa-star" id="detailFavoriteBadgeIcon"></i></span>';
     if (playcount && parseInt(playcount) > 0) badgesHtml += '<span class="badge-netflix">' + playcount + 'x</span>';
     else badgesHtml += '<span class="badge-netflix">Never played</span>';
     if (badgesEl) badgesEl.innerHTML = badgesHtml;
@@ -1001,6 +1166,12 @@ function fillDetailModal(data) {
     video.load();
 }
 
+// Currently open game in the info popup, used by the favorite star button.
+var currentModalGame = null;
+// Card element the current popup was opened from - so after toggling a
+// favorite we can update that card's badge directly, without a full reload.
+var currentModalSourceEl = null;
+
 function detailFill(ev) {
     var el = ev.currentTarget;
     fillDetailModal({
@@ -1017,8 +1188,10 @@ function detailFill(ev) {
         releasedate: el.getAttribute('data-releasedate'),
         playcount: el.getAttribute('data-playcount'),
         favorite: el.getAttribute('data-favorite'),
-        cheevos: el.getAttribute('data-cheevos')
+        cheevos: el.getAttribute('data-cheevos'),
+        system: el.getAttribute('data-system')
     });
+    currentModalSourceEl = el;
 }
 
 function openGameDetail(game) {
@@ -1026,9 +1199,68 @@ function openGameDetail(game) {
         name: game.name, desc: game.desc, thumb: game.thumbnail, image: game.image,
         marquee: game.marquee, video: game.video, path: game.path, manual: game.manual,
         map: game.map, genre: game.genre, releasedate: game.releasedate,
-        playcount: game.playcount, favorite: game.favorite, cheevos: game.cheevosHash
+        playcount: game.playcount, favorite: game.favorite, cheevos: game.cheevosHash,
+        system: game.systemName
     });
+    currentModalSourceEl = null;
     $('#detailModal').modal('show');
+}
+
+// Opens the confirm popup for adding/removing this game from favorites,
+// with the wording matching its current state.
+function openFavoriteConfirm() {
+    if (!currentModalGame) return;
+    var willAdd = !currentModalGame.favorite;
+    var titleEl = document.getElementById('favoriteConfirmTitle');
+    var bodyEl = document.getElementById('favoriteConfirmBody');
+    var btnEl = document.getElementById('favoriteConfirmBtn');
+    if (titleEl) titleEl.textContent = willAdd ? 'Add to favorites?' : 'Remove from favorites?';
+    if (bodyEl) bodyEl.textContent = willAdd
+        ? 'This game will be added to your favorites.'
+        : 'This game will be removed from your favorites.';
+    if (btnEl) btnEl.textContent = willAdd ? 'Add' : 'Remove';
+    $('#favoriteConfirmModal').modal('show');
+}
+
+// Calls the batocerapower companion service to toggle favorite in
+// gamelist.xml. See INSTALL.md - requires the same service as Restart/Shutdown.
+function toggleFavoriteFromModal() {
+    if (!currentModalGame || !currentModalGame.system || !currentModalGame.path) {
+        return;
+    }
+    var newValue = !currentModalGame.favorite;
+    var url = 'http://' + batoceraPowerHost() + '/favorite'
+        + '?system=' + encodeURIComponent(currentModalGame.system)
+        + '&path=' + encodeURIComponent(currentModalGame.path)
+        + '&value=' + (newValue ? 'true' : 'false');
+
+    fetch(url).then(function(r) {
+        if (!r.ok) throw new Error('request failed');
+        currentModalGame.favorite = newValue;
+        var favBadge = document.getElementById("detailFavoriteBadge");
+        var favIcon = document.getElementById("detailFavoriteBadgeIcon");
+        if (favBadge) {
+            favBadge.setAttribute("aria-label", newValue ? "Remove from favorites" : "Add to favorites");
+            favBadge.title = newValue ? "Remove from favorites" : "Add to favorites";
+        }
+        if (favIcon) {
+            favIcon.className = newValue ? "fas fa-star" : "far fa-star";
+        }
+        if (currentModalSourceEl) {
+            currentModalSourceEl.setAttribute('data-favorite', newValue ? 'true' : 'false');
+            var badge = currentModalSourceEl.querySelector('.card-favorite-badge, .home-favorite-badge');
+            if (newValue && !badge) {
+                var cls = currentModalSourceEl.classList.contains('home-game') ? 'home-favorite-badge' : 'card-favorite-badge';
+                var mediaEl = currentModalSourceEl.querySelector('.card-img-container, .home-game-media');
+                if (mediaEl) mediaEl.insertAdjacentHTML('beforeend', '<span class="' + cls + '"><i class="fas fa-star"></i></span>');
+            } else if (!newValue && badge) {
+                badge.remove();
+            }
+        }
+        // Not auto-reloading gamelists here on purpose - use Refresh in
+        // the Options menu yourself when you want EmulationStation to
+        // pick up the new favorite status.
+    }).catch(function() {});
 }
 
 function playDetailVideo(ev) {
@@ -1141,7 +1373,9 @@ function createGameCardElement(game) {
     if (coverSrc) {
         cardHtml += '<div class="card-img-container">' +
             '<div class="card-img-backdrop" style="background-image:url(&quot;' + coverSrc + '&quot;)"></div>' +
-            '<img class="card-img-cover" loading="lazy" src="' + coverSrc + '"></div>';
+            '<img class="card-img-cover" loading="lazy" src="' + coverSrc + '">' +
+            (game.favorite === "true" ? '<span class="card-favorite-badge"><i class="fas fa-star"></i></span>' : '') +
+            '</div>';
     }
 
     cardDiv.innerHTML = cardHtml;
@@ -1215,6 +1449,7 @@ function loadGames(name) {
         if (this.readyState == 4 && this.status == 200) {
             if (currentSystemName === name) {
                 var myArr = JSON.parse(this.responseText);
+                detectKodiLauncher(myArr, name);
                 myArr.sort(getOrder("name"));
                 showGames(myArr);
             }
@@ -1222,6 +1457,26 @@ function loadGames(name) {
     };
     xhr.open('GET', '/systems/' + name + '/games');
     xhr.send();
+}
+
+// If this is the 'ports' system, look for a 'kodi.sh' entry and remember
+// its path for the Kodi button in the Options menu. This does NOT hide
+// it from the game list - hide it yourself in EmulationStation's own
+// "hidden" setting if you don't want it showing up between your games;
+// the existing hidden-game filtering elsewhere in this file already
+// respects that. Batocera has no dedicated Kodi API, but a game entry
+// that just runs 'kodi' works fine when launched the normal way, since
+// EmulationStation's own launch pipeline already has a proper display
+// session - which a background/companion service does not.
+function detectKodiLauncher(games, systemName) {
+    if (systemName !== 'ports') return;
+    var entry = games.find(function(game) {
+        return (game.path || '').split('/').pop().toLowerCase() === 'kodi.sh';
+    });
+    if (entry) {
+        kodiLaunchPath = entry.path;
+        updateKodiButtonVisibility();
+    }
 }
 
 function removeItem(arr, value) {
@@ -1319,6 +1574,9 @@ function createHomeGameCard(game, systemName) {
     } else {
         html += '<div class="home-game-no-image">' + escapeHtml(game.name || 'Unknown game') + '</div>';
     }
+    if (game.favorite === "true") {
+        html += '<span class="home-favorite-badge"><i class="fas fa-star"></i></span>';
+    }
     html += '</div>';
     card.innerHTML = html;
 
@@ -1407,6 +1665,7 @@ async function loadHome(systems) {
             var response = await fetch('/systems/' + system.name + '/games');
             if (!response.ok) return {system: system, games: []};
             var games = await response.json();
+            detectKodiLauncher(games, system.name);
             games = games.filter(function(game) { return game.hidden !== "true"; });
             games.forEach(function(g) { g.systemName = system.name; g.systemFullname = system.fullname || system.name; });
             games.sort(getOrder("name"));
@@ -1453,10 +1712,10 @@ function startHeroSlideshow(games) {
     container.style.transition = 'none';
     container.style.transform = 'translateX(0%)';
     updateHeroContent();
-    // transition weer aanzetten na de eerste, ongeanimeerde render
+    // re-enable the transition after the first, unanimated render
     requestAnimationFrame(function() { container.style.transition = ''; });
 
-    // Klikken/Enter op de hero opent de infopopup - maar niet als het net een swipe was.
+    // Clicking/Enter on the hero opens the info popup - unless it was just a swipe.
     hero.onclick = function() {
         if (heroSwiped) { heroSwiped = false; return; }
         var game = heroSlideGames[heroSlideIndex];
@@ -1496,8 +1755,8 @@ function restartHeroInterval() {
     }, 5000);
 }
 
-// Swipe met je vinger door de slideshow - volgt live mee met je vinger,
-// en snapt daarna naar de dichtstbijzijnde slide.
+// Swipe through the slideshow with your finger - follows your finger live,
+// then snaps to the nearest slide.
 function setupHeroSwipe(hero, container) {
     var startX = 0, currentX = 0, dragging = false, width = 1;
 
@@ -1536,7 +1795,7 @@ function setupHeroSwipe(hero, container) {
     });
 }
 
-// Toont de marquee (of anders de titel) van het spel dat nu in de diashow te zien is.
+// Shows the marquee (or the title as fallback) of the game currently shown in the slideshow.
 function updateHeroContent() {
     var content = document.getElementById('heroContent');
     if (!content) return;
@@ -1567,6 +1826,15 @@ function describe(d) {
             out += '<div class="gameName" id="gameName">Notification service unreachable</div>';
             return (out);
         }
+    }
+    // Kodi is launched through ES's normal /launch pipeline (see
+    // detectKodiLauncher() above), so ES's own notification websocket
+    // reports it exactly like a regular game starting. It isn't one,
+    // so show the same "no game running" state instead of a fake game
+    // card for it.
+    if ((d.path || '').split('/').pop().toLowerCase() === 'kodi.sh') {
+        out += '<div class="gameName" id="gameName">No game running</div>';
+        return (out);
     }
     out += '<div class="d-flex align-items-center justify-content-center">';
     if (d.image) {
@@ -1600,16 +1868,38 @@ function describe(d) {
 
 var PREVDATA = null;
 
-// Batocera levert sommige systeemnamen (o.a. de automatische 'favorites' en
-// 'lastplayed'-verzamelingen) met een kleine letter aan - hier normaliseren
-// we dat naar een hoofdletter, zodat het overal netjes oogt.
+// Batocera returns some system names (e.g. the automatic 'favorites' and
+// 'lastplayed' collections) lowercase - here we normalize them to start
+// with a capital letter, so it looks tidy everywhere.
 function capitalizeFirst(str) {
     if (!str) return str;
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+// Fixes stacked modals (a modal opened on top of another one that stays
+// open, like the favorite confirm popup on top of the game info popup):
+// Bootstrap 4 doesn't raise the new backdrop above the modal underneath
+// it by default, so we bump the most recent backdrop up ourselves.
+$(document).on('shown.bs.modal', '.modal', function() {
+    var backdrops = $('.modal-backdrop');
+    if (backdrops.length > 1) {
+        backdrops.not('.modal-stack-adjusted').last().addClass('modal-stack-adjusted');
+    }
+});
+
+// When the nested confirm popup closes, Bootstrap thinks NO modal is
+// open anymore and undoes the page's scroll-lock/body class - even
+// though the game info popup underneath is still open. Restore it so
+// that popup keeps scrolling normally (e.g. to reach Play/Close).
+$(document).on('hidden.bs.modal', '.modal', function() {
+    if ($('.modal.show').length) {
+        $('body').addClass('modal-open');
+    }
+});
+
 $(document).ready(function() {
     document.body.classList.add('home-mode');
+    checkBatoceraPowerAvailable();
     fetch('/systems')
     .then(response => response.json())
     .then(data => {
@@ -1656,17 +1946,147 @@ $(document).on('hidden.bs.modal', '#detailModal', function() {
 </script>
 
 <!-- Modal windows -->
-<div class="modal fade" id="killModal" tabindex="-1" role="dialog" aria-labelledby="KillModalLabel" aria-hidden="true">
+<div class="modal fade" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="OptionsModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered" role="document">
 <div class="modal-content">
 <div class="modal-header" style="border-bottom:none;">
-<h5 class="modal-title" id="KillModalLabel"><i class="fas fa-exclamation-triangle text-danger mr-2"></i>Are you sure?</h5>
+<h5 class="modal-title" id="OptionsModalLabel"><i class="fas fa-cog text-danger mr-2"></i>Options</h5>
+<button type="button" class="close-btn" data-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
+</div>
+<div class="modal-body">
+<div class="power-menu">
+<button type="button" class="power-menu-item power-menu-item-danger" data-toggle="modal" data-target="#killGameModal" data-dismiss="modal">
+<i class="fas fa-gamepad"></i>
+<div><div class="power-menu-title">Kill Game</div><div class="power-menu-sub">Stop the running emulator</div></div>
+</button>
+<button type="button" class="power-menu-item" data-dismiss="modal" onclick="reloadGamelists(); setTimeout(() => location.reload(), 500);">
+<i class="fas fa-undo"></i>
+<div><div class="power-menu-title">Refresh</div><div class="power-menu-sub">Reload the game lists and page</div></div>
+</button>
+<button type="button" class="power-menu-item power-only-item" style="display:none;" data-toggle="modal" data-target="#restartESModal" data-dismiss="modal">
+<i class="fas fa-redo"></i>
+<div><div class="power-menu-title">Restart EmulationStation</div><div class="power-menu-sub">Restarts ES only, not the whole machine</div></div>
+</button>
+<button type="button" class="power-menu-item kodi-only-item" style="display:none;" data-toggle="modal" data-target="#kodiModal" data-dismiss="modal">
+<i class="fas fa-film"></i>
+<div><div class="power-menu-title">Kodi</div><div class="power-menu-sub">Stops ES and starts Kodi</div></div>
+</button>
+<button type="button" class="power-menu-item power-only-item" style="display:none;" data-toggle="modal" data-target="#restartModal" data-dismiss="modal">
+<i class="fas fa-sync-alt"></i>
+<div><div class="power-menu-title">Restart</div><div class="power-menu-sub">Reboot the Batocera machine</div></div>
+</button>
+<button type="button" class="power-menu-item power-menu-item-danger power-only-item" style="display:none;" data-toggle="modal" data-target="#shutdownModal" data-dismiss="modal">
+<i class="fas fa-power-off"></i>
+<div><div class="power-menu-title">Shutdown</div><div class="power-menu-sub">Turn the Batocera machine off</div></div>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Confirmation: restart EmulationStation -->
+<div class="modal fade" id="restartESModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header" style="border-bottom:none;">
+<h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger mr-2"></i>Restart EmulationStation?</h5>
+</div>
+<div class="modal-body text-secondary">
+This will restart EmulationStation on the Batocera machine. Any running game will be closed.
+</div>
+<div class="modal-footer" style="border-top:none;">
+<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button>
+<button type="button" class="btn btn-netflix" data-dismiss="modal" onclick="batoceraRestartES()">Restart</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Confirmation: start Kodi -->
+<div class="modal fade" id="kodiModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header" style="border-bottom:none;">
+<h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger mr-2"></i>Start Kodi?</h5>
+</div>
+<div class="modal-body text-secondary">
+This will stop EmulationStation and start Kodi on the Batocera machine.
+</div>
+<div class="modal-footer" style="border-top:none;">
+<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button>
+<button type="button" class="btn btn-netflix" data-dismiss="modal" onclick="batoceraStartKodi()">Start Kodi</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Confirmation: kill game -->
+<div class="modal fade" id="killGameModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header" style="border-bottom:none;">
+<h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger mr-2"></i>Are you sure?</h5>
 </div>
 <div class="modal-body text-secondary">
 Confirm you want to kill the running emulator and game.
 </div>
 <div class="modal-footer" style="border-top:none;">
-<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button> <button type="button" class="btn btn-netflix" data-dismiss="modal" onclick="emuKill()">Kill it!</button>
+<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button>
+<button type="button" class="btn btn-netflix" data-dismiss="modal" onclick="emuKill()">Kill it!</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Confirmation: add/remove favorite -->
+<div class="modal fade" id="favoriteConfirmModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header" style="border-bottom:none;">
+<h5 class="modal-title" id="favoriteConfirmTitle">Add to favorites?</h5>
+</div>
+<div class="modal-body text-secondary" id="favoriteConfirmBody">
+This game will be added to your favorites.
+</div>
+<div class="modal-footer" style="border-top:none;">
+<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button>
+<button type="button" class="btn btn-netflix" id="favoriteConfirmBtn" data-dismiss="modal" onclick="toggleFavoriteFromModal()">Add</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Confirmation: restart -->
+<div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header" style="border-bottom:none;">
+<h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger mr-2"></i>Restart Batocera?</h5>
+</div>
+<div class="modal-body text-secondary">
+This will reboot the entire Batocera machine, not just the current game.
+</div>
+<div class="modal-footer" style="border-top:none;">
+<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button>
+<button type="button" class="btn btn-netflix" data-dismiss="modal" onclick="batoceraRestart()">Restart</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Confirmation: shutdown -->
+<div class="modal fade" id="shutdownModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header" style="border-bottom:none;">
+<h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger mr-2"></i>Shut down Batocera?</h5>
+</div>
+<div class="modal-body text-secondary">
+This will turn off the entire Batocera machine. You'll need to power it back on manually.
+</div>
+<div class="modal-footer" style="border-top:none;">
+<button type="button" class="btn btn-netflix-secondary" data-dismiss="modal">Cancel</button>
+<button type="button" class="btn btn-netflix" data-dismiss="modal" onclick="batoceraShutdown()">Shutdown</button>
 </div>
 </div>
 </div>
@@ -1716,17 +2136,14 @@ Your browser does not support HTML5 video.
 <button type="button" class="btn btn-netflix-secondary btn-sm mr-1" onclick="toggleSearch()" id="searchToggle" title="Search">
 <i class="fas fa-search"></i>
 </button>
-<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" data-toggle="collapse" data-target="#systemList" aria-expanded="true" aria-controls="systemList" id="showSystems" title="Systems">
-<i class="fas fa-th"></i><span class="btn-text ml-1">Systems</span>
-</button>
 <button type="button" class="btn btn-netflix-secondary btn-sm mr-1" data-toggle="collapse" data-target="#jumbo-container" id="showNotifs" title="Current Game">
 <i class="fas fa-play-circle"></i><span class="btn-text ml-1">Current</span>
 </button>
-<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" onclick="reloadGamelists(); setTimeout(() => location.reload(), 500);" title="Reload">
-<i class="fas fa-sync-alt"></i>
+<button type="button" class="btn btn-netflix-secondary btn-sm mr-1" data-toggle="collapse" data-target="#systemList" aria-expanded="true" aria-controls="systemList" id="showSystems" title="Systems">
+<i class="fas fa-th"></i><span class="btn-text ml-1">Systems</span>
 </button>
-<button type="button" class="btn btn-netflix btn-sm" data-toggle="modal" data-target="#killModal" title="Kill">
-<i class="fas fa-power-off"></i><span class="btn-text ml-1">Kill</span>
+<button type="button" class="btn btn-netflix btn-sm" data-toggle="modal" data-target="#optionsModal" title="Options">
+<i class="fas fa-cog"></i>
 </button>
 </div>
 </div>
@@ -1850,7 +2267,7 @@ function onSearchInput(value) {
 </div>
 
 <script>
-// Swipe-ondersteuning voor de consolebalk onderin (naast de bestaande pijltjes-knoppen).
+// Swipe support for the console bar at the bottom (alongside the existing arrow buttons).
 (function() {
     var carouselEl = document.getElementById('sysCarousel');
     if (!carouselEl) return;
